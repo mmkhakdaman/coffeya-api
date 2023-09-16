@@ -13,9 +13,19 @@ class Category extends Model
         'title',
         'order'
     ];
-    
+
     protected static function newFactory()
     {
         return \Modules\Category\Database\factories\CategoryFactory::new();
+    }
+
+    public function products()
+    {
+        return $this->hasMany(\Modules\Product\Entities\Product::class);
+    }
+
+    public function activeProducts()
+    {
+        return $this->hasMany(\Modules\Product\Entities\Product::class)->where('is_active', 1);
     }
 }
