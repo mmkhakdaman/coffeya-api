@@ -36,6 +36,9 @@ class ProductService
 
     public function updateProduct(Product $category, array $data)
     {
+        if (isset($data['image'])) {
+            $data['image'] = $data['image']->store('products', 'public');
+        }
         return $this->repo()->updateProduct($category, $data);
     }
 
@@ -43,4 +46,21 @@ class ProductService
     {
         return $this->repo()->delete($category);
     }
+    
+    public function toggleActive(Product $product)
+    {
+        return $this->repo()->toggleActive($product);
+    }
+
+    public function toggleStock(Product $product)
+    {
+        return $this->repo()->toggleStock($product);
+    }
+
+    public function reorder($data)
+    {
+        return $this->repo()->reorder($data);
+    }
+
+    
 }

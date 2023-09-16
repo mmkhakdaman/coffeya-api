@@ -44,4 +44,13 @@ class CategoryRepository
             ->orderBy('order')
             ->get();
     }
+
+    public function reorderCategories($categories)
+    {
+        foreach ($categories as $category) {
+            $this->query()->find($category['id'])->update([
+                'order' => $category['order'],
+            ]);
+        }
+    }
 }

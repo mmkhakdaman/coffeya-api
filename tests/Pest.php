@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,7 +43,16 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+
+/**
+ * Create user with login.
+ *
+ * @return User
+ */
+function createUserWithLogin()
 {
-    // ..
+    $user = User::factory()->create();
+    auth('api')->login($user);
+
+    return $user;
 }

@@ -38,4 +38,9 @@ class CategoryService
     {
         return $this->repo()->delete($category);
     }
+
+    public function reorderCategories($categories)
+    {
+        return $this->repo()->reorderCategories($categories);
+    }
 }
