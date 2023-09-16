@@ -34,6 +34,7 @@ class CategoryRepository
     {
         return $this->query()
             ->orderBy('order')
+            ->withWhereHas('activeProducts')
             ->get();
     }
 
