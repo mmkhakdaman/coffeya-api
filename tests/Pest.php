@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Customer\Entities\Customer;
 use Tests\TestCase;
 
 /*
@@ -55,4 +56,17 @@ function createUserWithLogin()
     auth('api')->login($user);
 
     return $user;
+}
+
+/**
+ * Create customer with login.
+ *
+ * @return Customer
+ */
+function createCustomerWithLogin()
+{
+    $customer = Customer::factory()->create();
+    auth('customer')->login($customer);
+
+    return $customer;
 }
