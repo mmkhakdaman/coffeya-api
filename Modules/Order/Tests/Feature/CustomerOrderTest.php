@@ -26,7 +26,7 @@ it('can add product to cart', function () {
             ]
         ],
         'description' => 'test description',
-        'table_token' => 'test_token',
+        'table_token' => $table->token,
     ])->assertStatus(200);
 });
 
