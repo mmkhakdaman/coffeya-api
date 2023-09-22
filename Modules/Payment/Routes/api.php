@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\Order\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +13,6 @@ use Modules\Order\Http\Controllers\OrderController;
 |
 */
 
-Route::middleware('auth:customer')
-    ->group(
-        function () {
-            Route::post('order/check-out', [OrderController::class, 'checkOut']);
-        }
-    );
+Route::middleware('auth:api')->get('/payment', function (Request $request) {
+    return $request->user();
+});

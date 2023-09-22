@@ -3,5 +3,6 @@
     "Order": true,
     "Category": true,
     "Customer": true,
-    "Table": true
+    "Table": true,
+    "Payment": true
 }
