@@ -21,7 +21,7 @@ class ProductResource extends JsonResource
             'category_id' => $this->category_id,
             'order' => $this->order,
             'price' => $this->price,
-            'image' => $this->image,
+            'image' => $this->image ? url('/storage/' . $this->image) : url('/images/no-image.jpg'),
             'is_active' => $this->is_active,
             'in_stock' => $this->in_stock,
             'created_at' => $this->created_at,
