@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\table\Repositories;
+namespace Modules\Table\Repositories;
 
 use Modules\Table\Entities\Table;
 use Illuminate\Support\Str;

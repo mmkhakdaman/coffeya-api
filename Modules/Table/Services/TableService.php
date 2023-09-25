@@ -3,7 +3,7 @@
 namespace Modules\Table\Services;
 
 use Modules\Table\Entities\Table;
-use Modules\table\Repositories\TableRepository;
+use Modules\Table\Repositories\TableRepository;
 
 class TableService
 {

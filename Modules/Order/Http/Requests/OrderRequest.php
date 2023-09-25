@@ -14,7 +14,10 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'cart' => 'required|array',
+            'cart.*.product_id' => 'required|integer|exists:products,id',
+            'cart.*.quantity' => 'required|integer|min:1',
+            'description' => 'nullable|string',
         ];
     }
 
