@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Modules\Customer\Entities\Customer;
 use Modules\Customer\Http\Requests\SendOtpRequest;
 use Modules\Customer\Http\Requests\VerifyOtpRequest;
-use Modules\Customer\Services\OtpService;
+use Modules\OTP\Services\OtpService;
 
 class AuthController extends Controller
 {

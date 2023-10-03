@@ -1,6 +1,6 @@
 <?php
 
-use Modules\Customer\Entities\OTP;
+use Modules\OTP\Entities\OTP;
 
 uses(Tests\TestCase::class);
 

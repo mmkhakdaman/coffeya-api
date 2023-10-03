@@ -17,8 +17,8 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
 
-            $table->foreign('customer_id')->constrained();
-            $table->foreign('table_id')->constrained();
+            $table->foreignId('customer')->constrained();
+            $table->foreignId('table')->constrained();
 
             $table->text('description')->nullable();
             $table->enum('status', get_value_enums(OrderStatusEnum::cases()))
