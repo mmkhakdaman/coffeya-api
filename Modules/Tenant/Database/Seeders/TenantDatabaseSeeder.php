@@ -4,6 +4,8 @@ namespace Modules\Tenant\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Tenant\Entities\Tenant;
+use Modules\Tenant\Entities\User;
 
 class TenantDatabaseSeeder extends Seeder
 {
@@ -16,6 +18,9 @@ class TenantDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call("OthersTableSeeder");
+        $user = User::factory()->create();
+
+        $tenant1 = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
+        $tenant1->domains()->create(['domain' => 'foo.coffeya-api.test']);
     }
 }

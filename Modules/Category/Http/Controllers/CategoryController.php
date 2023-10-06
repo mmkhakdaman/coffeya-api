@@ -24,6 +24,7 @@ class CategoryController extends Controller
      */
     public function list()
     {
+        Category::factory()->create();
         return  CategoryResource::collection($this->service()->categories());
     }
 

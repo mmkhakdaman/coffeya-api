@@ -11,12 +11,12 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory;
 
     protected $fillable = [];
-    
+
     protected static function newFactory()
     {
         return \Modules\Tenant\Database\factories\UserFactory::new();
     }
-    
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -37,5 +37,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function tenants()
+    {
+        return $this->hasMany(Tenant::class);
     }
 }

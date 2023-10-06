@@ -44,6 +44,14 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+function initializeTenancy()
+{
+    $user = \Modules\Tenant\Entities\User::factory()->create();
+    $tenant = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
+
+    tenancy()->initialize($tenant);
+}
+
 
 /**
  * Create user with login.
