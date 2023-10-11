@@ -13,6 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/otp', function (Request $request) {
+Route::middleware('auth:tenant_admin')->get('/otp', function (Request $request) {
     return $request->user();
 });

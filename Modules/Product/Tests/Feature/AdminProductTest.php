@@ -4,25 +4,12 @@
 uses(Tests\TestCase::class);
 
 
-// product admin testing
-/* 
-this is the migrations for the product table
-$table->string('title');
-$table->string('description');
+beforeEach(function () {
+    initializeTenancy();
+});
 
-$table->foreignId('category_id')->constrained('categories');
 
-$table->integer('order');
-$table->integer('price');
-$table->string('image')->nullable();
-$table->boolean('is_active')->default(true);
-$table->boolean('in_stock')->default(true);
-
-$table->softDeletes();
- */
-
-test('it can see the list o
-f products', function () {
+test('it can see the list of products', function () {
     $this->get('/api/admin/product/list')
         ->assertStatus(200)
         ->assertJsonStructure([
@@ -60,7 +47,7 @@ test('it can create a product', function () {
     $this->assertDatabaseHas('products', [
         'title' => 'Test Product',
         'description' => 'Test Product Description',
-        'category_id' => 1,
+        'category_id' => $category->id,
         'price' => 100,
         'image' => "products/{$image->hashName()}",
     ]);

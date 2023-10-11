@@ -4,6 +4,8 @@ namespace Modules\Order\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -33,9 +35,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
-
-        $this->mapWebRoutes();
+//        $this->mapApiRoutes();
+//
+//        $this->mapWebRoutes();
+        $this->mapTenantApiRoutes();
     }
 
     /**
@@ -65,5 +68,18 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->moduleNamespace)
             ->group(module_path('Order', '/Routes/api.php'));
+    }
+
+
+    protected function mapTenantApiRoutes()
+    {
+        Route::prefix('api')
+            ->middleware([
+                'api',
+                InitializeTenancyByDomain::class,
+                PreventAccessFromCentralDomains::class,
+            ])
+            ->namespace($this->moduleNamespace)
+            ->group(module_path('Order', '/Routes/tenant/api.php'));
     }
 }

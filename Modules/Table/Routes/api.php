@@ -16,11 +16,3 @@ use Modules\Table\Http\Controllers\TableController;
 */
 
 
-Route::middleware('auth:api')
-    ->prefix('admin')
-    ->group(
-        function () {
-            Route::apiResource('table', TableController::class)->except(['destroy']);
-            Route::put('table/{table}/toggle-active', [TableController::class, 'toggleActive'])->name('table.toggle-active');
-        }
-    );

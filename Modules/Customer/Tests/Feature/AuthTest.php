@@ -15,12 +15,16 @@ it('should send otp', function () {
 });
 
 it('should verify otp', function () {
-    $this->post('/api/customer/auth/send-otp', [
-        'phone' => '09123456789',
+    $user = \Modules\Customer\Entities\Customer::factory()->create([
+        'phone'=>'09123456789'
     ]);
 
-    $token = OTP::where('mobile', '09123456789')->first()->token;
-    
+    $this->post('/api/customer/auth/send-otp', [
+        'phone' => $user->phone,
+    ]);
+
+    $token = $user->otps()->first()->token;
+
     $response = $this->post('/api/customer/auth/verify', [
         'phone' => '09123456789',
         'otp' => $token,
@@ -51,11 +55,17 @@ test('should not verify otp with invalid token', function () {
 });
 
 test('should not verify otp with invalid phone', function () {
-    $this->post('/api/customer/auth/send-otp', [
-        'phone' => '09123456789',
+    $user = \Modules\Customer\Entities\Customer::factory()->create([
+        'phone'=>'09123456789'
     ]);
 
-    $token = OTP::where('mobile', '09123456789')->first()->token;
+
+    $this->post('/api/customer/auth/send-otp', [
+        'phone' => $user->phone,
+    ]);
+
+    $token = $user->otps()
+        ->first()->token;
 
     $response = $this->post('/api/customer/auth/verify', [
         'phone' => '09123456788',

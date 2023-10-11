@@ -21,7 +21,8 @@ class CustomerFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'phone' => $this->faker->phoneNumber,
+            'name' => $this->faker->name,
         ];
     }
 }

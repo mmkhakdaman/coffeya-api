@@ -16,13 +16,19 @@ class AuthController extends Controller
      * Send OTP to the user
      *
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function sendOtp(SendOtpRequest $request)
     {
+
         $phone = $request->phone;
 
-        $otp_service = new OtpService($phone);
+        $user = Customer::query()->firstOrCreate([
+            'phone' => $phone
+        ]);
+
+
+        $otp_service = new OtpService($phone, $user);
 
         try {
             $otp_service->verify();
@@ -41,22 +47,23 @@ class AuthController extends Controller
      * Verify OTP
      *
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function verifyOtp(VerifyOtpRequest $request)
+    public function verifyOtp(VerifyOtpRequest $request): \Illuminate\Http\JsonResponse
     {
+        $phone = $request->phone;
 
-        $otp_service = new OtpService($request->phone);
+        $user = Customer::query()->firstOrCreate([
+            'phone' => $phone
+        ]);
+
+        $otp_service = new OtpService($phone, $user);
 
         if (!$otp_service->isValidToken($request->otp)) {
             return response()->json([
                 'message' => 'کد تایید معتبر نیست',
             ], 403);
         }
-
-        $user = Customer::firstOrCreate([
-            'phone' => $request->phone,
-        ]);
 
         $token = auth()->guard('customer')->login($user);
 

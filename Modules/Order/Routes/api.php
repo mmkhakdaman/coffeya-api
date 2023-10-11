@@ -13,10 +13,3 @@ use Modules\Order\Http\Controllers\OrderController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:customer')
-    ->group(
-        function () {
-            Route::post('order/check-out', [OrderController::class, 'checkOut']);
-        }
-    );

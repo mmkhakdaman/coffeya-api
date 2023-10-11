@@ -2,6 +2,9 @@
 
 uses(Tests\TestCase::class);
 
+beforeEach(function () {
+    initializeTenancy();
+});
 
 test('it can see the list of categories', function () {
     $this->get('/api/category/list')

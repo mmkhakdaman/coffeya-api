@@ -1,27 +1,22 @@
 <?php
 
-namespace App\Models;
+namespace Modules\Admin\Entities;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Modules\OTP\Entities\OTP;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class Admin  extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
-        'email',
-        'password',
+        'phone',
+        'password'
     ];
 
     /**
@@ -31,18 +26,13 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    protected static function newFactory()
+    {
+        return \Modules\Admin\Database\factories\AdminFactory::new();
+    }
+
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -64,5 +54,14 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+
+    /**
+     * @return MorphMany
+     */
+    public function otps(): MorphMany
+    {
+        return $this->morphMany(OTP::class, 'otpable');
     }
 }

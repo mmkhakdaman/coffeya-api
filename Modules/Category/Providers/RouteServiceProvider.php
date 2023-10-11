@@ -4,6 +4,8 @@ namespace Modules\Category\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,6 +38,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
+        $this->mapTenantApiRoutes();
     }
 
     /**
@@ -61,9 +64,29 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
+        foreach ($this->centralDomains() as $domain) {
+            Route::prefix('api')
+                ->domain($domain)
+                ->middleware('api')
+                ->namespace($this->moduleNamespace)
+                ->group(module_path('Category', '/Routes/api.php'));
+        }
+    }
+
+    protected function mapTenantApiRoutes()
+    {
         Route::prefix('api')
-            ->middleware('api')
+            ->middleware([
+                'api',
+                InitializeTenancyByDomain::class,
+                PreventAccessFromCentralDomains::class,
+            ])
             ->namespace($this->moduleNamespace)
-            ->group(module_path('Category', '/Routes/api.php'));
+            ->group(module_path('Category', '/Routes/tenant/api.php'));
+    }
+
+    protected function centralDomains(): array
+    {
+        return config('tenancy.central_domains');
     }
 }

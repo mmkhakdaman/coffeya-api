@@ -6,5 +6,6 @@
     "Table": true,
     "Payment": true,
     "Tenant": true,
-    "OTP": true
+    "OTP": true,
+    "Admin": true
 }

@@ -14,14 +14,16 @@ class OTP extends Model
         'mobile',
         'expired_on',
     ];
-    
+
+    protected $table = "otps";
+
     protected static function newFactory()
     {
         return \Modules\OTP\Database\factories\OTPFactory::new();
     }
 
-    public function otpable()
+    public function otps(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->morphTo();
+        return $this->morphMany(OTP::class, 'otpable');
     }
 }

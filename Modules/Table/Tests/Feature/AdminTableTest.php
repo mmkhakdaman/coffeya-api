@@ -2,6 +2,11 @@
 
 uses(Tests\TestCase::class);
 
+beforeEach(function () {
+    initializeTenancy();
+});
+
+
 it('can list tables', function () {
     createUserWithLogin();
     \Modules\Table\Entities\Table::factory()->count(3)->create();

@@ -17,8 +17,6 @@ test('it can see the list of categories', function () {
                 '*' => [
                     'id',
                     'title',
-                    'created_at',
-                    'updated_at',
                 ],
             ],
         ]);

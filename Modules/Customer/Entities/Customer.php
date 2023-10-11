@@ -2,10 +2,12 @@
 
 namespace Modules\Customer\Entities;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\OTP\Entities\OTP;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Customer extends Authenticatable implements JWTSubject
@@ -29,6 +31,7 @@ class Customer extends Authenticatable implements JWTSubject
     {
         return \Modules\Customer\Database\factories\CustomerFactory::new();
     }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -47,5 +50,13 @@ class Customer extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function otps(): MorphMany
+    {
+        return $this->morphMany(OTP::class, 'otpable');
     }
 }

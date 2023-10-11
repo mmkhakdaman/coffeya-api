@@ -16,8 +16,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'customer',
+        'passwords' => 'customers',
     ],
 
     /*
@@ -38,19 +38,19 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
+        'user' => [
+            'driver' => 'jwt',
             'provider' => 'users',
         ],
 
-        'api' => [
+        'tenant_admin' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'tenant_admin',
         ],
-        
+
         'customer' => [
             'driver' => 'jwt',
-            'provider' => 'customer',
+            'provider' => 'customers',
         ],
     ],
 
@@ -74,11 +74,15 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => \Modules\Tenant\Entities\User::class,
         ],
-        'customer' => [
+        'customers' => [
             'driver' => 'eloquent',
             'model' => Customer::class,
+        ],
+        'tenant_admin' => [
+            'driver' => 'eloquent',
+            'model' => \Modules\Admin\Entities\Admin::class,
         ],
     ],
 
@@ -102,8 +106,8 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'customers' => [
+            'provider' => 'customers',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

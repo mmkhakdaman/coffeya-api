@@ -1,7 +1,8 @@
+
 <?php
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Admin\Entities\Admin;
 use Modules\Customer\Entities\Customer;
 use Tests\TestCase;
 
@@ -16,7 +17,8 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class, RefreshDatabase::class)->in('Feature');
+uses(TestCase::class, RefreshDatabase::class)
+    ->in('Feature');
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +48,11 @@ expect()->extend('toBeOne', function () {
 
 function initializeTenancy()
 {
+    \Illuminate\Support\Facades\File::delete(base_path('database/tenantfoo'));
     $user = \Modules\Tenant\Entities\User::factory()->create();
     $tenant = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
+    $tenant->domains()->create(['domain' => 'foo.test']);
+    \Illuminate\Support\Facades\URL::forceRootUrl('http://' . $tenant->domains[0]['domain']);
 
     tenancy()->initialize($tenant);
 }
@@ -60,8 +65,8 @@ function initializeTenancy()
  */
 function createUserWithLogin()
 {
-    $user = User::factory()->create();
-    auth('api')->login($user);
+    $user = Admin::factory()->create();
+    auth('tenant_admin')->login($user);
 
     return $user;
 }
