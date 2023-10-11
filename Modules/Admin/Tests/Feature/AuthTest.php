@@ -11,7 +11,6 @@ beforeEach(function () {
 // test auth
 
 it('should send otp', function () {
-    OTP::all()->dd();
     $response = $this->post('/api/admin/auth/send-otp', [
         'phone' => '09123456789',
     ]);
@@ -68,8 +67,16 @@ test('should not verify otp with invalid phone', function () {
     $this->post('/api/admin/auth/send-otp', [
         'phone' => $user->phone,
     ]);
+    $otp = $user->otps()->first();
 
-    \Pest\Laravel\assertDatabaseHas('otps', $user->otps()->first()?->toArray() ?? []);
+    \Pest\Laravel\assertDatabaseHas('otps', [
+        "id"=>$otp->id,
+        "mobile"=>$otp->mobile,
+        "token"=>$otp->token,
+        "expires_on"=>$otp->expires_on,
+        "otpable_type"=>$otp->otpable_type,
+        "otpable_id"=>$otp->otpable_id,
+    ]);
 
     $token = $user->otps()->first()->token;
 
