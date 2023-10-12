@@ -9,16 +9,25 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-    
+    protected $fillable = [
+        'customer_id',
+        'price',
+        'description',
+        'status',
+//        'is_delivery',
+//        'address',
+        'table_id',
+        'pending_at'
+    ];
+
     protected static function newFactory()
     {
         return \Modules\Order\Database\factories\OrderFactory::new();
     }
 
-    public function orderItems()
+    public function items()
     {
         return $this->hasMany(OrderItem::class);
     }
-    
+
 }

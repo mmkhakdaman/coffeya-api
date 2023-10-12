@@ -2,11 +2,11 @@
 
 namespace Modules\Payment\Services;
 
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Modules\Customer\Entities\Customer;
+use Modules\Payment\Entities\Payment;
 use Modules\Payment\Enums\PaymentStatusEnum;
 use Modules\Payment\Gateways\ZarinpallGateway;
-use Modules\Payment\Models\Payment;
 
 class PaymentService
 {
@@ -18,22 +18,24 @@ class PaymentService
      * @param User $buyer
      * @param array $discounts
      *
-     * @return false|RedirectResponse|Payment
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+     * @throws \Exception
      */
     public function generate(
-        int    $amount,
-        object $paymentable,
-        User   $buyer,
-        array  $discounts = []
-    ) {
+        int      $amount,
+        object   $paymentable,
+        Customer $buyer,
+        array    $discounts = []
+    )
+    {
         if ($amount <= 0 || is_null($paymentable->id) || is_null($buyer->id)) {
             return false;
         }
 
         $gateway = new ZarinpallGateway();
-        $invoiceId = $gateway->request($amount, $paymentable->id);
+        $invoice = $gateway->request($amount, $paymentable->id);
 
-        if (is_null($invoiceId)) {
+        if (is_null($invoice)) {
             return back();
         }
 
@@ -48,18 +50,20 @@ class PaymentService
         }
 
 
-        return $this->store([
+        $payment = $this->store([
             'buyer_id' => $buyer->id,
             'paymentable_id' => $paymentable->id,
             'paymentable_type' => get_class($paymentable),
             'amount' => $amount,
-            'invoice_id' => $invoiceId,
+            'invoice_id' => $invoice->getTransactionId(),
             'gateway' => $gateway->getName(),
             'status' => PaymentStatusEnum::STATUS_PENDING->value,
             'seller_p' => $seller_p,
             'seller_share' => $seller_share,
             'site_share' => $site_share,
         ], $discounts);
+
+        return (new \Shetabit\Multipay\Payment)->transactionId($payment->invoice_id)->pay();
     }
 
     /**

@@ -38,10 +38,10 @@ class OrderService
                     'price' => $price,
                     'description' => $orderRequest->description,
                     'status' => OrderStatusEnum::NOT_PAID,
-                    'pending_at' => now()
+                    'pending_at' => now(),
+                    'table_id' => $orderRequest->table_id,
                 ]
             );
-
         $this->repo()->storeOrderProducts($order, $cart);
 
         return $order;

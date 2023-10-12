@@ -18,6 +18,7 @@ class OrderRequest extends FormRequest
             'cart.*.product_id' => 'required|integer|exists:products,id',
             'cart.*.quantity' => 'required|integer|min:1',
             'description' => 'nullable|string',
+            'table_id' => 'required|integer|exists:tables,id'
         ];
     }
 

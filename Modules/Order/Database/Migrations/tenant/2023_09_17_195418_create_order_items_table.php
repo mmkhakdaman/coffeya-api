@@ -16,6 +16,18 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignIdFor(\Modules\Order\Entities\Order::class);
+
+            $table->foreignIdFor(\Modules\Product\Entities\Product::class);
+
+            $table->unsignedBigInteger('customer_id');
+
+            $table->bigInteger('price')->default(0);
+            $table->integer('quantity')->default(0);
+
+            $table->bigInteger('total')->default(0);
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

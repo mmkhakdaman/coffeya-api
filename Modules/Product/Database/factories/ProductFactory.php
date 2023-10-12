@@ -26,7 +26,7 @@ class ProductFactory extends Factory
             'description'=> $this->faker->text,
             'category_id'=> CategoryFactory::new(),
             'order'=> $this->faker->numberBetween(1, 10),
-            'price'=> $this->faker->numberBetween(1, 10),
+            'price'=> $this->faker->numberBetween(10000, 1000000),
             'image'=> $this->faker->imageUrl(),
             'is_active'=> $this->faker->boolean,
             'in_stock'=> $this->faker->boolean,

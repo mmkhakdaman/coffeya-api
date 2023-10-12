@@ -12,90 +12,55 @@ beforeEach(function () {
 
 // testing ordering products by price in customer side
 
-it('can add product to cart', function () {
-    $products = Product::factory()->count(10)->create();
-    $table = Table::factory()->create([
-        'token' => 'test_token',
-    ]);
+// /api/order/check-out
+//'cart' => 'required|array',
+//'cart.*.product_id' => 'required|integer|exists:products,id',
+//'cart.*.quantity' => 'required|integer|min:1',
+//'description' => 'nullable|string',
 
-    $this->post('/api/order/add-to-cart', [
-        'cart_id' => [
-            [
-                'product_id' => $products->first()->id,
+
+test('customer can order products', function () {
+    $customer = customer();
+
+    $table = Table::factory()->create();
+
+    $products = Product::factory()->count(3)->create();
+
+    $cart = $products->map(
+        function ($product) {
+            return [
+                'product_id' => $product->id,
                 'quantity' => 1,
-            ],
+            ];
+        }
+    );
+
+    $response = $this->actingAs($customer, 'customer')
+        ->postJson(
+            "/api/order/check-out",
             [
-                'product_id' => $products->last()->id,
-                'quantity' => 1,
+                'cart' => $cart,
+                'description' => 'test description',
+                'table_id' => $table->id,
             ]
+        );
+
+    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url','order_id']));
+
+    $this->assertDatabaseHas(
+        'orders',
+        [
+            'customer_id' => $customer->id,
+            'description' => 'test description',
+            'table_id' => $table->id,
+        ]
+    );
+    $this->assertDatabaseHas(
+        'order_items',
+        [
+            'order_id' => $response->json('order_id'),
+            'product_id' => $products->first()->id,
+            'quantity' => 1,
         ],
-        'description' => 'test description',
-        'table_token' => $table->token,
-    ])->assertStatus(200);
-});
-
-it('can add product to cart with wrong table token', function () {
-    $products = Product::factory()->count(10)->create();
-    $table = Table::factory()->create([
-        'token' => 'test_token',
-    ]);
-
-    $this->post('/api/order/add-to-cart', [
-        'cart_id' => [
-            [
-                'product_id' => $products->first()->id,
-                'quantity' => 1,
-            ],
-            [
-                'product_id' => $products->last()->id,
-                'quantity' => 1,
-            ]
-        ],
-        'description' => 'test description',
-        'table_token' => 'wrong_token',
-    ])->assertStatus(404);
-});
-
-it('can add product to cart with wrong product id', function () {
-    $products = Product::factory()->count(10)->create();
-    $table = Table::factory()->create([
-        'token' => 'test_token',
-    ]);
-
-    $this->post('/api/order/add-to-cart', [
-        'cart_id' => [
-            [
-                'product_id' => 100,
-                'quantity' => 1,
-            ],
-            [
-                'product_id' => $products->last()->id,
-                'quantity' => 1,
-            ]
-        ],
-        'description' => 'test description',
-        'table_token' => 'test_token',
-    ])->assertStatus(404);
-});
-
-it('cart most have at least one product', function () {
-    $table = Table::factory()->create([
-        'token' => 'test_token',
-    ]);
-
-    $this->post('/api/order/add-to-cart', [
-        'cart_id' => [],
-        'description' => 'test description',
-        'table_token' => 'test_token',
-    ])->assertStatus(422);
-});
-
-it('cart most ordered when customer pay', function () {
-    $table = Table::factory()->create([
-        'token' => 'test_token',
-    ]);
-
-    $this->post('/api/order/pay', [
-        'table_token' => 'test_token',
-    ])->assertStatus(422);
+    );
 });

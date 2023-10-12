@@ -7,5 +7,6 @@
     "Payment": true,
     "Tenant": true,
     "OTP": true,
-    "Admin": true
+    "Admin": true,
+    "Course": true
 }

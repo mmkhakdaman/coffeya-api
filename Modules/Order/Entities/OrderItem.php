@@ -9,8 +9,14 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-    
+    protected $fillable = [
+        'customer_id',
+        'product_id',
+        'quantity',
+        'price',
+        'total',
+    ];
+
     protected static function newFactory()
     {
         return \Modules\Order\Database\factories\OrderItemFactory::new();

@@ -2,8 +2,9 @@
 
 namespace Modules\Order\Repositories;
 
+use Modules\Customer\Entities\Customer;
+use Modules\Order\Entities\Order;
 use Modules\Order\Enums\OrderStatusEnum;
-use Modules\Order\Models\Order;
 
 class OrderRepository
 {
@@ -21,14 +22,15 @@ class OrderRepository
                 'price' => $data['price'],
                 'description' => $data['description'],
                 'status' => $data['status'],
-                'is_delivery' => $data['is_delivery'],
-                'address' => $data['address'],
+//                'is_delivery' => $data['is_delivery'],
+//                'address' => $data['address'],
+                'table_id' => $data['table_id'],
                 'pending_at' => $data['pending_at']
             ]
         );
     }
 
-    public function storeOrderProducts(\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder $order, \Illuminate\Support\Collection $orderProducts)
+    public function storeOrderProducts(\Illuminate\Database\Eloquent\Model|Order $order, \Illuminate\Support\Collection $orderProducts)
     {
         return $order->items()->createMany(
             $orderProducts->map(
@@ -68,6 +70,7 @@ class OrderRepository
     {
         return $order->update(['status' => $status->value]);
     }
+
     public function getPendingOrdersByCustomerId(int|string|null $id)
     {
         return $this->query()

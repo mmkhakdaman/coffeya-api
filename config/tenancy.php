@@ -52,7 +52,7 @@ return [
          * Tenant database names are created like this:
          * prefix + tenant_id + suffix.
          */
-        'prefix' => 'tenant',
+        'prefix' => 'tenant_',
         'suffix' => '',
 
         /**
@@ -89,7 +89,7 @@ return [
      * You can clear cache selectively by specifying the tag.
      */
     'cache' => [
-        'tag_base' => 'tenant', // This tag_base, followed by the tenant_id, will form a tag that will be applied on each cache call.
+        'tag_base' => 'tenant_', // This tag_base, followed by the tenant_id, will form a tag that will be applied on each cache call.
     ],
 
     /**
@@ -192,6 +192,8 @@ return [
             'Modules/OTP/Database/Migrations/tenant',
             'Modules/Category/Database/Migrations/tenant',
             'Modules/Product/Database/Migrations/tenant',
+            'Modules/Order/Database/Migrations/tenant',
+            'Modules/Payment/Database/Migrations/tenant',
             'Modules/Table/Database/Migrations/tenant',
         ],
         '--realpath' => true,

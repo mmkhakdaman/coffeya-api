@@ -38,7 +38,8 @@ class OrderController extends Controller
         );
 
         return [
-            'redirect_url' => $transaction->getRedirectUrl(),
+            'order_id' => $order->id,
+            'redirect_url' => $transaction->getUrl(),
         ];
     }
 }

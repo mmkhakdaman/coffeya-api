@@ -1,6 +1,6 @@
-
 <?php
 
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Admin\Entities\Admin;
 use Modules\Customer\Entities\Customer;
@@ -17,7 +17,7 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class, RefreshDatabase::class)
+uses(TestCase::class, RefreshDatabase::class, DatabaseMigrations::class)
     ->in('Feature');
 
 /*
@@ -46,9 +46,12 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+/**
+ * @throws \Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById
+ */
 function initializeTenancy()
 {
-    \Illuminate\Support\Facades\File::delete(base_path('database/tenantfoo'));
+    \Illuminate\Support\Facades\File::delete(base_path('database/tenant_foo'));
     $user = \Modules\Tenant\Entities\User::factory()->create();
     $tenant = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
     $tenant->domains()->create(['domain' => 'foo.test']);
@@ -82,4 +85,14 @@ function createCustomerWithLogin()
     auth('customer')->login($customer);
 
     return $customer;
+}
+
+/**
+ * Create customer with login.
+ *
+ * @return Customer
+ */
+function customer()
+{
+    return Customer::factory()->create();
 }
