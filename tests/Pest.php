@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Admin\Entities\Admin;
 use Modules\Customer\Entities\Customer;
+use Modules\Tenant\Entities\User;
 use Tests\TestCase;
 
 /*
@@ -52,7 +53,7 @@ expect()->extend('toBeOne', function () {
 function initializeTenancy()
 {
     \Illuminate\Support\Facades\File::delete(base_path('database/tenant_foo'));
-    $user = \Modules\Tenant\Entities\User::factory()->create();
+    $user = User::factory()->create();
     $tenant = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
     $tenant->domains()->create(['domain' => 'foo.test']);
     \Illuminate\Support\Facades\URL::forceRootUrl('http://' . $tenant->domains[0]['domain']);
@@ -66,7 +67,7 @@ function initializeTenancy()
  *
  * @return User
  */
-function createUserWithLogin()
+function tenantAdmin()
 {
     $user = Admin::factory()->create();
     auth('tenant_admin')->login($user);
@@ -74,25 +75,24 @@ function createUserWithLogin()
     return $user;
 }
 
-/**
- * Create customer with login.
- *
- * @return Customer
- */
-function createCustomerWithLogin()
-{
-    $customer = Customer::factory()->create();
-    auth('customer')->login($customer);
-
-    return $customer;
-}
 
 /**
  * Create customer with login.
  *
  * @return Customer
  */
-function customer()
+function customer(): Customer
 {
     return Customer::factory()->create();
+}
+
+
+/**
+ * Create customer with login.
+ *
+ * @return User
+ */
+function user(): User
+{
+    return User::factory()->create();
 }

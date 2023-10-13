@@ -8,7 +8,7 @@ beforeEach(function () {
 
 
 it('can list tables', function () {
-    createUserWithLogin();
+    $this->actingAs(tenantAdmin());
     \Modules\Table\Entities\Table::factory()->count(3)->create();
 
     $this->get('/api/admin/table')
@@ -18,7 +18,7 @@ it('can list tables', function () {
 
 
 it('can create a table', function () {
-    createUserWithLogin();
+    $this->actingAs(tenantAdmin());
     $this->post(
         '/api/admin/table',
         [
@@ -33,7 +33,7 @@ it('can create a table', function () {
 
 
 it('can update a table', function () {
-    createUserWithLogin();
+    $this->actingAs(tenantAdmin());
     $table = \Modules\Table\Entities\Table::factory()->create();
 
     $this->put('/api/admin/table/' . $table->id, [
@@ -46,7 +46,7 @@ it('can update a table', function () {
 });
 
 it('can show a table', function () {
-    createUserWithLogin();
+    $this->actingAs(tenantAdmin());
     $table = \Modules\Table\Entities\Table::factory()->create();
 
     $this->get('/api/admin/table/' . $table->id)
@@ -60,7 +60,7 @@ it('can show a table', function () {
 });
 
 it('can toggle active a table', function () {
-    createUserWithLogin();
+    $this->actingAs(tenantAdmin());
     $table = \Modules\Table\Entities\Table::factory()->create([
         'active' => 0,
     ]);
@@ -74,7 +74,7 @@ it('can toggle active a table', function () {
 });
 
 it('can toggle in-active a table', function () {
-    createUserWithLogin();
+    $this->actingAs(tenantAdmin());
     $table = \Modules\Table\Entities\Table::factory()->create([
         'active' => 1,
     ]);
