@@ -24,9 +24,10 @@ class OrderController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @return Collection
+     * @return array
+     * @throws \Exception
      */
-    public function checkOut(OrderRequest $request)
+    public function checkOut(OrderRequest $request): array
     {
         $order = $this->service()->storeOrder($request);
 

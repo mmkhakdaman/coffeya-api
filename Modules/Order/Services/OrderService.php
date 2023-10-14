@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Services;
 
+use Modules\Address\Entities\Address;
 use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Order\Http\Requests\OrderRequest;
 use Modules\Order\Repositories\OrderRepository;
@@ -23,24 +24,27 @@ class OrderService
             );
 
         $cart = collect($orderRequest->cart)->map(
-            function ($product) use ($products) {
-                $product['price'] = $products->find($product['product_id'])->price;
-                return $product;
+            function ($item) use ($products) {
+                $item['price'] = $products->find($item['product_id'])->price;
+                return $item;
             }
         );
 
-        $price = $this->calculatePrice($cart);
+        $order_price = $this->calculatePrice($cart);
+        $post_cost = $orderRequest->is_delivery ? $this->postCost() : 0;
 
         $order = $this
             ->repo()
             ->storeOrder(
-                [
-                    'price' => $price,
-                    'description' => $orderRequest->description,
-                    'status' => OrderStatusEnum::NOT_PAID,
-                    'pending_at' => now(),
-                    'table_id' => $orderRequest->table_id,
-                ]
+                auth()->id(),
+                $order_price,
+                $orderRequest->description,
+                OrderStatusEnum::PENDING,
+                $orderRequest->table_id,
+                now(),
+                $orderRequest->is_delivery,
+                $orderRequest->address_id,
+                $post_cost
             );
         $this->repo()->storeOrderProducts($order, $cart);
 
@@ -56,13 +60,8 @@ class OrderService
         );
     }
 
-    public function listOrders()
+    private function postCost(): int
     {
-        return $this->repo()->getPendingOrdersByCustomerId(auth()->id());
-    }
-
-    public function historyOrders()
-    {
-        return $this->repo()->getOrdersHistoryByCustomerId(auth()->id());
+        return 10000;
     }
 }

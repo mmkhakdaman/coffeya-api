@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Customer\Http\Controllers\AddressController;
 use Modules\Customer\Http\Controllers\AuthController;
 
 /*
@@ -19,4 +20,11 @@ Route::prefix('customer')
     ->group(function () {
         Route::post('/auth/send-otp', [AuthController::class, 'sendOtp']);
         Route::post('/auth/verify', [AuthController::class, 'verifyOtp']);
+    });
+
+
+Route::middleware('auth:customer')
+    ->prefix('customer')
+    ->group(function () {
+        Route::apiResource('address', AddressController::class);
     });

@@ -14,8 +14,8 @@ class Order extends Model
         'price',
         'description',
         'status',
-//        'is_delivery',
-//        'address',
+        'is_delivery',
+        'address_id',
         'table_id',
         'pending_at'
     ];

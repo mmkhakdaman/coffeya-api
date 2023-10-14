@@ -8,5 +8,6 @@
     "Tenant": true,
     "OTP": true,
     "Admin": true,
-    "Course": true
+    "Course": true,
+    "Address": true
 }

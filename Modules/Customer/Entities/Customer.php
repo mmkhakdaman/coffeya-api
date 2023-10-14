@@ -60,4 +60,9 @@ class Customer extends Authenticatable implements JWTSubject
     {
         return $this->morphMany(OTP::class, 'otpable');
     }
+
+    public function addresses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
 }

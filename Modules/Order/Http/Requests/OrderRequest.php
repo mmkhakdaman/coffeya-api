@@ -11,14 +11,18 @@ class OrderRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'cart' => 'required|array',
             'cart.*.product_id' => 'required|integer|exists:products,id',
             'cart.*.quantity' => 'required|integer|min:1',
+
+            'is_delivery' => 'required|boolean',
             'description' => 'nullable|string',
-            'table_id' => 'required|integer|exists:tables,id'
+
+            'table_id' => 'nullable|integer|exists:tables,id',
+            'address_id' => 'required_if:is_delivery,true|integer|exists:addresses,id',
         ];
     }
 
@@ -27,8 +31,8 @@ class OrderRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return true;
+        return auth('customer')->check();
     }
 }

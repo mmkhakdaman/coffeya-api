@@ -14,18 +14,29 @@ class OrderRepository
         return Order::query();
     }
 
-    public function storeOrder($data)
+    public function storeOrder(
+        $customer_id,
+        $order_price,
+        $description,
+        $status,
+        $table_id,
+        $pending_at,
+        $is_delivery,
+        $address_id,
+        $post_cost
+    )
     {
         return $this->query()->create(
             [
-                'customer_id' => auth()->id(),
-                'price' => $data['price'],
-                'description' => $data['description'],
-                'status' => $data['status'],
-//                'is_delivery' => $data['is_delivery'],
-//                'address' => $data['address'],
-                'table_id' => $data['table_id'],
-                'pending_at' => $data['pending_at']
+                'customer_id' => $customer_id,
+                'order_price' => $order_price,
+                'description' => $description,
+                'status' => $status,
+                'table_id' => $table_id,
+                'pending_at' => $pending_at,
+                'is_delivery' => $is_delivery,
+                'address_id' => $address_id,
+                'post_cost' => $post_cost,
             ]
         );
     }
@@ -45,39 +56,5 @@ class OrderRepository
                 }
             )->toArray()
         );
-    }
-
-    public function getOrdersByCustomerId(int|string|null $id)
-    {
-        return $this->query()
-            ->where('customer_id', $id)
-            ->with('items.product')
-            ->orderBy('pending_at', 'desc')
-            ->get();
-    }
-
-    public function getOrdersHistoryByCustomerId(int|string|null $id)
-    {
-        return $this->query()
-            ->where('customer_id', $id)
-            ->whereNotIn('status', [OrderStatusEnum::PENDING])
-            ->with('items.product')
-            ->orderBy('pending_at', 'desc')
-            ->get();
-    }
-
-    public function changeStatus(\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder $order, OrderStatusEnum $status)
-    {
-        return $order->update(['status' => $status->value]);
-    }
-
-    public function getPendingOrdersByCustomerId(int|string|null $id)
-    {
-        return $this->query()
-            ->where('customer_id', $id)
-            ->where('status', OrderStatusEnum::PENDING)
-            ->with('items.product')
-            ->orderBy('pending_at', 'desc')
-            ->get();
     }
 }
