@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->foreignIdFor(\Modules\Table\Entities\Table::class)->nullable();
 
             $table->boolean('is_delivery')->default(false);
-            $table->foreignIdFor(\Modules\Address\Entities\Address::class)->nullable();
+            $table->foreignIdFor(\Modules\Customer\Entities\Address::class)->nullable();
 
             $table->boolean('is_packaging')->default(false);
 

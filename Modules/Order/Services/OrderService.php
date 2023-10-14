@@ -36,15 +36,18 @@ class OrderService
         $order = $this
             ->repo()
             ->storeOrder(
-                auth()->id(),
-                $order_price,
-                $orderRequest->description,
-                OrderStatusEnum::PENDING,
-                $orderRequest->table_id,
-                now(),
-                $orderRequest->is_delivery,
-                $orderRequest->address_id,
-                $post_cost
+                [
+                    'customer_id' => auth()->id(),
+                    'order_price' => $order_price,
+                    'description' => $orderRequest->description,
+                    'status' => OrderStatusEnum::PENDING,
+                    'table_id' => $orderRequest->table_id,
+                    'pending_at' => now(),
+                    'is_delivery' => $orderRequest->is_delivery,
+                    'address_id' => $orderRequest->address_id,
+                    'post_cost' => $post_cost,
+                    'total_price' => $order_price + $post_cost,
+                ]
             );
         $this->repo()->storeOrderProducts($order, $cart);
 

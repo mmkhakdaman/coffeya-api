@@ -9,5 +9,6 @@
     "OTP": true,
     "Admin": true,
     "Course": true,
-    "Address": true
+    "Address": true,
+    "Walet": true
 }

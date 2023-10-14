@@ -67,12 +67,9 @@ function initializeTenancy()
  *
  * @return User
  */
-function tenantAdmin()
+function tenantAdmin() : Admin
 {
-    $user = Admin::factory()->create();
-    auth('tenant_admin')->login($user);
-
-    return $user;
+    return Admin::factory()->create();
 }
 
 

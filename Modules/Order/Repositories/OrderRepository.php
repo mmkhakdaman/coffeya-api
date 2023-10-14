@@ -14,31 +14,9 @@ class OrderRepository
         return Order::query();
     }
 
-    public function storeOrder(
-        $customer_id,
-        $order_price,
-        $description,
-        $status,
-        $table_id,
-        $pending_at,
-        $is_delivery,
-        $address_id,
-        $post_cost
-    )
+    public function storeOrder($data)
     {
-        return $this->query()->create(
-            [
-                'customer_id' => $customer_id,
-                'order_price' => $order_price,
-                'description' => $description,
-                'status' => $status,
-                'table_id' => $table_id,
-                'pending_at' => $pending_at,
-                'is_delivery' => $is_delivery,
-                'address_id' => $address_id,
-                'post_cost' => $post_cost,
-            ]
-        );
+        return $this->query()->create($data);
     }
 
     public function storeOrderProducts(\Illuminate\Database\Eloquent\Model|Order $order, \Illuminate\Support\Collection $orderProducts)

@@ -3,6 +3,8 @@
 namespace Modules\Order\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Modules\Customer\Entities\Address;
 
 class OrderRequest extends FormRequest
 {
@@ -22,7 +24,7 @@ class OrderRequest extends FormRequest
             'description' => 'nullable|string',
 
             'table_id' => 'nullable|integer|exists:tables,id',
-            'address_id' => 'required_if:is_delivery,true|integer|exists:addresses,id',
+            'address_id' => ['required_if:is_delivery,true|integer', Rule::exists(Address::class, 'id')->where('customer_id', auth('customer')->id())],
         ];
     }
 

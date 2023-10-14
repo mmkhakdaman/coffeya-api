@@ -32,7 +32,7 @@ class OrderController extends Controller
         $order = $this->service()->storeOrder($request);
 
         $transaction = $this->paymentService()->generate(
-            $order->price,
+            $order->total_price,
             $order,
             $request->user(),
             []

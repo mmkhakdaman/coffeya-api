@@ -1,5 +1,6 @@
 <?php
 
+use Modules\Customer\Entities\Address;
 use Modules\Product\Entities\Product;
 use Modules\Table\Entities\Table;
 
@@ -37,7 +38,7 @@ test('customer can order products', function () {
             ]
         );
 
-    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url','order_id']));
+    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url', 'order_id']));
 
     $this->assertDatabaseHas(
         'orders',
@@ -61,6 +62,7 @@ test('customer can order products with delivery', function () {
     $customer = customer();
 
     $products = Product::factory()->count(3)->create();
+    $address = Address::factory()->create(['customer_id' => $customer->id]);
 
     $cart = $products->map(
         function ($product) {
@@ -78,18 +80,19 @@ test('customer can order products with delivery', function () {
                 'cart' => $cart,
                 'description' => 'test description',
                 'is_delivery' => true,
-                'address' => 'test address',
+                'address_id' => $address->id,
             ]
         );
 
-    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url','order_id']));
+    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url', 'order_id']));
 
     $this->assertDatabaseHas(
         'orders',
         [
             'customer_id' => $customer->id,
             'description' => 'test description',
-            'address' => 'test address',
+            'is_delivery' => true,
+            'address_id' => $address->id,
         ]
     );
     $this->assertDatabaseHas(
