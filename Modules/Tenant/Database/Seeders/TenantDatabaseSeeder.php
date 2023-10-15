@@ -5,6 +5,7 @@ namespace Modules\Tenant\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Modules\Admin\Entities\Admin;
 use Modules\Tenant\Entities\Tenant;
 use Modules\Tenant\Entities\User;
 
@@ -30,10 +31,12 @@ class TenantDatabaseSeeder extends Seeder
 
         $tenant1 = $user->tenants()->create(['id' => 'test', 'name' => 'test', 'english_name' => 'test']);
         $tenant1->domains()->create(['domain' => 'test.coffeeya.ir']);
-        $tenant1->admins()->create([
-            'name' => 'Mahdi Khakdaman',
-            'phone' => '9944432552',
-            'password' => Hash::make('password'),
-        ]);
+        tenancy()->find($tenant1->id)->run(function () use ($tenant1) {
+            Admin::create([
+                'name' => 'Mahdi Khakdaman',
+                'phone' => '9944432552',
+                'password' => Hash::make('password'),
+            ]);
+        });
     }
 }
