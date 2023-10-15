@@ -2,6 +2,7 @@
 
 namespace Modules\Tenant\Entities;
 
+use Modules\Admin\Entities\Admin;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
@@ -24,5 +25,10 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function admins()
+    {
+        return $this->hasMany(Admin::class);
     }
 }

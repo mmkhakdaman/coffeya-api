@@ -30,5 +30,10 @@ class TenantDatabaseSeeder extends Seeder
 
         $tenant1 = $user->tenants()->create(['id' => 'test', 'name' => 'test', 'english_name' => 'test']);
         $tenant1->domains()->create(['domain' => 'test.coffeeya.ir']);
+        $tenant1->admins()->create([
+            'name' => 'Mahdi Khakdaman',
+            'phone' => '9944432552',
+            'password' => Hash::make('password'),
+        ]);
     }
 }
