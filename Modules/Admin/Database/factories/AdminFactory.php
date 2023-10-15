@@ -3,6 +3,7 @@
 namespace Modules\Admin\Database\factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 class AdminFactory extends Factory
 {
@@ -23,7 +24,7 @@ class AdminFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
-            'password' => $this->faker->password(),
+            'password' => Hash::make('password'),
         ];
     }
 }

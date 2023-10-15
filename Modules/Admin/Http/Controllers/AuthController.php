@@ -11,67 +11,50 @@ use Modules\OTP\Services\OtpService;
 
 class AuthController extends Controller
 {
-    /**
-     * Send OTP to the user
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function sendOtp(SendOtpRequest $request)
+    public function login(Request $request)
     {
-
-        $phone = $request->phone;
-
-        $user = Admin::query()->firstOrCreate([
-            'phone' => $phone
+        $request->validate([
+            'phone' => 'required|exists:admins,phone',
+            'password' => 'required'
         ]);
 
+        $admin = Admin::where('phone', $request->phone)->first();
 
-        $otp_service = new OtpService($phone, $user);
-
-        try {
-            $otp_service->verify();
-        } catch (\Exception $e) {
+        if (!auth('tenant_admin')->attempt($request->only('phone', 'password'))) {
             return response()->json([
-                'message' => $e->getMessage(),
-            ], 403);
+                'message' => 'Invalid credentials'
+            ], 401);
         }
 
+        $token = auth('tenant_admin')->claims([
+            'name' => $admin->name,
+            'phone' => $admin->phone,
+        ])->attempt($request->only('phone', 'password'));
+
         return response()->json([
-            'message' => 'کد تایید به شماره موبایل شما ارسال شد',
+            'access_token' => $token,
+            'refresh_token' => auth('tenant_admin')->refresh(),
+            'token_type' => 'bearer',
+            'expires_in' => auth('tenant_admin')->factory()->getTTL() * 60
         ]);
     }
 
-    /**
-     * Verify OTP
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function verifyOtp(VerifyOtpRequest $request): \Illuminate\Http\JsonResponse
+    public function refresh()
     {
-        $phone = $request->phone;
-
-        $user = Admin::query()->firstOrCreate([
-            'phone' => $phone
-        ]);
-
-        $otp_service = new OtpService($phone, $user);
-
-        if (!$otp_service->isValidToken($request->otp)) {
-            return response()->json([
-                'message' => 'کد تایید معتبر نیست',
-            ], 403);
-        }
-
-        $token = auth()->guard('tenant_admin')->login($user);
 
         return response()->json([
-            'data' => [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => now()->addMinutes(config('jwt.ttl'))->timestamp,
-            ]
-        ], 200);
+            'access_token' => auth('tenant_admin')->refresh(),
+            'token_type' => 'bearer',
+            'expires_in' => auth('tenant_admin')->factory()->getTTL() * 60
+        ]);
+    }
+
+    public function logout()
+    {
+        auth('tenant_admin')->logout();
+
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ]);
     }
 }

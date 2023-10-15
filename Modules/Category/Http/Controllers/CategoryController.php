@@ -2,6 +2,7 @@
 
 namespace Modules\Category\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -18,6 +19,7 @@ class CategoryController extends Controller
     {
         return resolve(CategoryService::class);
     }
+
     /**
      * Display a listing of the resource.
      * @return ResourceCollection
@@ -25,7 +27,7 @@ class CategoryController extends Controller
     public function list()
     {
         Category::factory()->create();
-        return  CategoryResource::collection($this->service()->categories());
+        return CategoryResource::collection($this->service()->categories());
     }
 
     /**
@@ -34,7 +36,7 @@ class CategoryController extends Controller
      */
     public function adminList()
     {
-        return  CategoryResource::collection($this->service()->categories());
+        return CategoryResource::collection($this->service()->categories());
     }
 
     /**
@@ -62,12 +64,23 @@ class CategoryController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param CategoryRequest $request
-     * @return Response
+     * @param OrderCategoryRequest $request
+     * @return JsonResponse
      */
-    public function reorder(OrderCategoryRequest $request)
+    public function reorder(OrderCategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service()->reorderCategories($request->input('categories'));
         return response()->json(['message' => 'Categories reordered successfully']);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * @param Category $category
+     * @return JsonResponse
+     */
+    public function disable(Category $category): JsonResponse
+    {
+        $this->service()->disableCategory($category);
+        return response()->json(['message' => 'Category disabled successfully']);
     }
 }

@@ -55,13 +55,4 @@ class Admin  extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-
-    /**
-     * @return MorphMany
-     */
-    public function otps(): MorphMany
-    {
-        return $this->morphMany(OTP::class, 'otpable');
-    }
 }

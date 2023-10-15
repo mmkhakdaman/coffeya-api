@@ -30,7 +30,7 @@ class CategoryRepository
         return $category->delete();
     }
 
-    public function getCategories()
+    public function getCategories(): \Illuminate\Database\Eloquent\Collection|array
     {
         return $this->query()
             ->orderBy('order')
@@ -38,7 +38,7 @@ class CategoryRepository
             ->get();
     }
 
-    public function getHasProductsCategories()
+    public function getHasProductsCategories(): \Illuminate\Database\Eloquent\Collection|array
     {
         return $this->query()
             ->has('products')
@@ -46,12 +46,19 @@ class CategoryRepository
             ->get();
     }
 
-    public function reorderCategories($categories)
+    public function reorderCategories($categories): void
     {
         foreach ($categories as $category) {
             $this->query()->find($category['id'])->update([
                 'order' => $category['order'],
             ]);
         }
+    }
+
+    public function disableCategory(Category $category)
+    {
+        return $category->update([
+            'is_active' => false,
+        ]);
     }
 }

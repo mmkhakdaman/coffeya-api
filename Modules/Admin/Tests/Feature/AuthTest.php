@@ -10,82 +10,51 @@ beforeEach(function () {
 
 // test auth
 
-it('should send otp', function () {
-    $response = $this->post('/api/admin/auth/send-otp', [
-        'phone' => '09123456789',
+test('admin can login', function () {
+    $admin = \Modules\Admin\Entities\Admin::factory()->create();
+
+
+    $this->postJson('/api/admin/auth/login', [
+        'phone' => $admin->phone,
+        'password' => 'password'
+    ])->assertOk()->assertJsonStructure([
+        'access_token',
+        'refresh_token',
+        'token_type',
+        'expires_in'
     ]);
 
-    $response->assertStatus(200);
+    $this->assertAuthenticatedAs($admin, 'tenant_admin');
 });
 
-it('should verify otp', function () {
-    $user = \Modules\Admin\Entities\Admin::factory()->create([
-        'phone' => '09123456789'
-    ]);
+test('admin can refresh token', function () {
+    $admin = \Modules\Admin\Entities\Admin::factory()->create();
 
-    $this->post('/api/admin/auth/send-otp', [
-        'phone' => $user->phone,
-    ]);
+    $this->postJson('/api/admin/auth/login', [
+        'phone' => $admin->phone,
+        'password' => 'password'
+    ])->assertOk();
 
-    $token = $user->otps()->first()->token;
-
-    $response = $this->post('/api/admin/auth/verify', [
-        'phone' => '09123456789',
-        'otp' => $token,
-    ]);
-
-
-    $response->assertStatus(200);
-    $response->assertJsonStructure([
-        'data' => [
-            'access_token',
-            'token_type',
-            'expires_in',
-        ]
+    $this->postJson('/api/admin/auth/refresh')->assertOk()->assertJsonStructure([
+        'access_token',
+        'token_type',
+        'expires_in'
     ]);
 });
 
-test('should not verify otp with invalid token', function () {
-    $this->post('/api/admin/auth/send-otp', [
-        'phone' => '09123456789',
-    ]);
 
-    $response = $this->post('/api/admin/auth/verify', [
-        'phone' => '09123456789',
-        'otp' => '123',
-    ]);
+test('admin can logout', function () {
+    $admin = \Modules\Admin\Entities\Admin::factory()->create();
 
-    $response->assertStatus(403);
+    $this->postJson('/api/admin/auth/login', [
+        'phone' => $admin->phone,
+        'password' => 'password'
+    ])->assertOk();
+
+    $this->postJson('/api/admin/auth/logout')->assertOk()->assertJsonStructure([
+        'message'
+    ]);
 });
 
-test('should not verify otp with invalid phone', function () {
-    $user = \Modules\Admin\Entities\Admin::factory()->create([
-        'phone' => '09123456789'
-    ]);
-
-
-    $this->post('/api/admin/auth/send-otp', [
-        'phone' => $user->phone,
-    ]);
-    $otp = $user->otps()->first();
-
-    \Pest\Laravel\assertDatabaseHas('otps', [
-        "id"=>$otp->id,
-        "mobile"=>$otp->mobile,
-        "token"=>$otp->token,
-        "expires_on"=>$otp->expires_on,
-        "otpable_type"=>$otp->otpable_type,
-        "otpable_id"=>$otp->otpable_id,
-    ]);
-
-    $token = $user->otps()->first()->token;
-
-    $response = $this->post('/api/admin/auth/verify', [
-        'phone' => '09123456788',
-        'otp' => $token,
-    ]);
-
-    $response->assertStatus(403);
-});
 
 

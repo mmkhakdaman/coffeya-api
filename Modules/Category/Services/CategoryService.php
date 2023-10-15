@@ -43,4 +43,9 @@ class CategoryService
     {
         return $this->repo()->reorderCategories($categories);
     }
+
+    public function disableCategory(Category $category)
+    {
+        return $this->repo()->disableCategory($category);
+    }
 }
