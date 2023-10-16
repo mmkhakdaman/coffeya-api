@@ -30,11 +30,66 @@ test('it can create a category', function () {
     ]);
 });
 
+test('user can not create a category with repeated title', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    $category = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->postJson('/api/admin/category/create', [
+        'title' => $category->title,
+    ])->assertStatus(422)->assertJsonValidationErrors(['title']);
+});
+
+test('user can not create a category without title', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+
+    $this->postJson('/api/admin/category/create', [
+        'title' => '',
+    ])->assertStatus(422)->assertJsonValidationErrors(['title']);
+});
+
+test('user can not create a category with title more than 255 characters', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+
+    $this->postJson('/api/admin/category/create', [
+        'title' => str_repeat('a', 256),
+    ])->assertStatus(422)->assertJsonValidationErrors(['title']);
+});
+
+test('user can not update a category with repeated title', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    $category1 = \Modules\Category\Entities\Category::factory()->create();
+    $category2 = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->putJson('/api/admin/category/update/' . $category1->id, [
+        'title' => $category2->title,
+    ])->assertStatus(422)->assertJsonValidationErrors(['title']);
+});
+
+test('user can not update a category without title', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    $category = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->putJson('/api/admin/category/update/' . $category->id, [
+        'title' => '',
+    ])->assertStatus(422)->assertJsonValidationErrors(['title']);
+});
+
+test('user can not update a category with title more than 255 characters', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    $category = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->putJson('/api/admin/category/update/' . $category->id, [
+        'title' => str_repeat('a', 256),
+    ])->assertStatus(422)->assertJsonValidationErrors(['title']);
+});
+
+
+
 test('it can update a category', function () {
     $this->actingAs(tenantAdmin(), 'tenant_admin');
     $category = \Modules\Category\Entities\Category::factory()->create();
 
-    $this->put('/api/admin/category/update/' . $category->id, [
+    $this->putJson('/api/admin/category/update/' . $category->id, [
         'title' => 'Test Category Updated',
     ])->assertStatus(200);
 
@@ -50,7 +105,7 @@ test('it can reorder categories', function () {
     $category2 = \Modules\Category\Entities\Category::factory()->create();
     $category3 = \Modules\Category\Entities\Category::factory()->create();
 
-    $this->put('/api/admin/category/reorder', [
+    $this->putJson('/api/admin/category/reorder', [
         'categories' => [
             [
                 'id' => $category1->id,
@@ -88,7 +143,7 @@ test('admin can disable a category', function () {
     $this->actingAs(tenantAdmin(), 'tenant_admin');
     $category = \Modules\Category\Entities\Category::factory()->create();
 
-    $this->put('/api/admin/category/disable/' . $category->id)
+    $this->putJson('/api/admin/category/disable/' . $category->id)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('categories', [
@@ -103,7 +158,7 @@ test('admin can enable a category', function () {
         'is_active' => false,
     ]);
 
-    $this->put('/api/admin/category/enable/' . $category->id)
+    $this->putJson('/api/admin/category/enable/' . $category->id)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('categories', [
@@ -111,3 +166,4 @@ test('admin can enable a category', function () {
         'is_active' => true,
     ]);
 });
+

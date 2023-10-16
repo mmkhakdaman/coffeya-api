@@ -52,7 +52,7 @@ test(
             'customer_id' => $customer->id,
         ]);
 
-        $this->put("/api/customer/address/{$address->id}", [
+        $this->putJson("/api/customer/address/{$address->id}", [
             'name' => 'Address Name',
             'address' => 'Address Address',
         ])->assertOk();

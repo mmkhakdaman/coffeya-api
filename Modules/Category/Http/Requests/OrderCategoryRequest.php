@@ -14,7 +14,7 @@ class OrderCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'categories' => 'required',
+            'categories' => 'required|array',
             'categories.*.id' => 'required|integer|exists:categories,id',
             'categories.*.order' => 'required|integer',
         ];

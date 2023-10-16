@@ -36,7 +36,7 @@ it('can update a table', function () {
     $this->actingAs(tenantAdmin(),'tenant_admin');
     $table = \Modules\Table\Entities\Table::factory()->create();
 
-    $this->put('/api/admin/table/' . $table->id, [
+    $this->putJson('/api/admin/table/' . $table->id, [
         'title' => 'Test Title',
     ])->assertStatus(200);
     $this->assertDatabaseHas('tables', [
@@ -65,7 +65,7 @@ it('can toggle active a table', function () {
         'active' => 0,
     ]);
 
-    $this->put('/api/admin/table/' . $table->id . '/toggle-active')
+    $this->putJson('/api/admin/table/' . $table->id . '/toggle-active')
         ->assertStatus(200);
     $this->assertDatabaseHas('tables', [
         'id' => $table->id,
@@ -79,7 +79,7 @@ it('can toggle in-active a table', function () {
         'active' => 1,
     ]);
 
-    $this->put('/api/admin/table/' . $table->id . '/toggle-active')
+    $this->putJson('/api/admin/table/' . $table->id . '/toggle-active')
         ->assertStatus(200);
 
     $this->assertDatabaseHas('tables', [

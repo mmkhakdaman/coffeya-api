@@ -34,15 +34,14 @@ class CategoryRepository
     {
         return $this->query()
             ->orderBy('order')
-            ->withWhereHas('activeProducts')
             ->get();
     }
 
     public function getHasProductsCategories(): \Illuminate\Database\Eloquent\Collection|array
     {
         return $this->query()
-            ->has('products')
             ->orderBy('order')
+            ->withWhereHas('activeProducts')
             ->get();
     }
 

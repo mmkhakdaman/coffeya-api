@@ -58,7 +58,7 @@ test('it can update a product', function () {
     $product = \Modules\Product\Entities\Product::factory()->create();
 
 
-    $this->put('/api/admin/product/update/' . $product->id, [
+    $this->putJson('/api/admin/product/update/' . $product->id, [
         'title' => 'Test Product Updated',
         'description' => 'Test Product Description Updated',
         'category_id' => 1,
@@ -81,7 +81,7 @@ test('it can reorder products', function () {
     $product3 = \Modules\Product\Entities\Product::factory()->create();
 
 
-    $this->put('/api/admin/product/reorder', [
+    $this->putJson('/api/admin/product/reorder', [
         'products' => [
             [
                 'id' => $product1->id,
@@ -133,7 +133,7 @@ test('it can make a product inactive', function () {
     ]);
 
 
-    $this->put('/api/admin/product/toggle-active/' . $product->id)
+    $this->putJson('/api/admin/product/toggle-active/' . $product->id)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('products', [
@@ -148,7 +148,7 @@ test('it can make a product active', function () {
     ]);
 
 
-    $this->put('/api/admin/product/toggle-active/' . $product->id)
+    $this->putJson('/api/admin/product/toggle-active/' . $product->id)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('products', [
@@ -164,7 +164,7 @@ test('it can make a product out of stock', function () {
     ]);
 
 
-    $this->put('/api/admin/product/toggle-stock/' . $product->id)
+    $this->putJson('/api/admin/product/toggle-stock/' . $product->id)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('products', [
@@ -179,7 +179,7 @@ test('it can make a product in stock', function () {
     ]);
 
 
-    $this->put('/api/admin/product/toggle-stock/' . $product->id)
+    $this->putJson('/api/admin/product/toggle-stock/' . $product->id)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('products', [

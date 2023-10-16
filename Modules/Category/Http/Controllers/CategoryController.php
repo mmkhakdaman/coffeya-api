@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Modules\Category\Entities\Category;
 use Modules\Category\Http\Requests\CategoryRequest;
 use Modules\Category\Http\Requests\OrderCategoryRequest;
+use Modules\Category\Repositories\CategoryRepository;
 use Modules\Category\Services\CategoryService;
 use Modules\Category\Transformers\CategoryResource;
 
@@ -20,6 +21,12 @@ class CategoryController extends Controller
         return resolve(CategoryService::class);
     }
 
+    private function repo(): CategoryRepository
+    {
+        return resolve(CategoryRepository::class);
+    }
+
+
     /**
      * Display a listing of the resource.
      * @return ResourceCollection
@@ -27,7 +34,7 @@ class CategoryController extends Controller
     public function list(): ResourceCollection
     {
         Category::factory()->create();
-        return CategoryResource::collection($this->service()->categories());
+        return CategoryResource::collection($this->repo()->getHasProductsCategories());
     }
 
     /**
@@ -36,7 +43,7 @@ class CategoryController extends Controller
      */
     public function adminList(): ResourceCollection
     {
-        return CategoryResource::collection($this->service()->categories());
+        return CategoryResource::collection($this->repo()->getCategories());
     }
 
     /**

@@ -19,6 +19,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'order' => $this->order,
+            'is_active' => $this->is_active,
             'products' => $this->whenHas('products', ProductResource::collection($this->products)),
         ];
     }

@@ -22,12 +22,8 @@ test('it can see the list of categories', function () {
                             'description',
                             'price',
                             'is_active',
-                            'created_at',
-                            'updated_at',
                         ],
                     ],
-                    'created_at',
-                    'updated_at',
                 ],
             ],
         ]);
