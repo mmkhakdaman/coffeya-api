@@ -31,22 +31,12 @@ class AuthController extends Controller
             'phone' => $admin->phone,
         ])->attempt($request->only('phone', 'password'));
 
-        return response()->json([
-            'access_token' => $token,
-            'refresh_token' => auth('tenant_admin')->refresh(),
-            'token_type' => 'bearer',
-            'expires_in' => auth('tenant_admin')->factory()->getTTL() * 60
-        ]);
+        return $this->respondWithToken($token);
     }
 
     public function refresh()
     {
-
-        return response()->json([
-            'access_token' => auth('tenant_admin')->refresh(),
-            'token_type' => 'bearer',
-            'expires_in' => auth('tenant_admin')->factory()->getTTL() * 60
-        ]);
+        return $this->respondWithToken(auth('tenant_admin')->refresh());
     }
 
     public function logout()
@@ -55,6 +45,23 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Successfully logged out'
+        ]);
+    }
+
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => now()->addMinutes(config('jwt.ttl'))->timestamp
         ]);
     }
 }
