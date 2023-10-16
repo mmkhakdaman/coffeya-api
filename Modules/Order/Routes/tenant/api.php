@@ -22,13 +22,11 @@ Route::middleware('auth:customer')
     );
 
 Route::middleware('auth:admin')
+    ->prefix('admin')
     ->group(
         function () {
-//            Route::get('order', [OrderController::class, 'index']);
-//            Route::get('order/{id}', [OrderController::class, 'show']);
-//            Route::post('order', [OrderController::class, 'store']);
-//            Route::put('order/{id}', [OrderController::class, 'update']);
-//            Route::delete('order/{id}', [OrderController::class, 'destroy']);
+            Route::get('/orders', [OrderController::class, 'index']);
+            Route::get('/orders/{id}', [OrderController::class, 'show']);
         }
     );
 

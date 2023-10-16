@@ -7,25 +7,25 @@ use Modules\Category\Entities\Category;
 class CategoryRepository
 {
 
+    private function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Category::query();
+    }
 
-    public function storeCategory($data)
+    public function storeCategory($data): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
         $order = $this->query()->max('order');
         $data['order'] = $order + 1;
         return $this->query()->create($data);
     }
 
-    private function query()
-    {
-        return Category::query();
-    }
 
-    public function updateCategory(Category $category, array $data)
+    public function updateCategory(Category $category, array $data): bool
     {
         return $category->update($data);
     }
 
-    public function delete(Category $category)
+    public function delete(Category $category): ?bool
     {
         return $category->delete();
     }
@@ -55,10 +55,17 @@ class CategoryRepository
         }
     }
 
-    public function disableCategory(Category $category)
+    public function disableCategory(Category $category): bool
     {
         return $category->update([
             'is_active' => false,
+        ]);
+    }
+
+    public function enableCategory(Category $category): bool
+    {
+        return $category->update([
+            'is_active' => true,
         ]);
     }
 }

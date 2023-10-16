@@ -8,7 +8,7 @@ beforeEach(function () {
 });
 
 test('it can see the list of categories', function () {
-    $this->actingAs(tenantAdmin(),'tenant_admin')->get('/api/admin/category/list')
+    $this->actingAs(tenantAdmin(), 'tenant_admin')->get('/api/admin/category/list')
         ->assertStatus(200)
         ->assertJsonStructure([
             'data' => [
@@ -21,7 +21,7 @@ test('it can see the list of categories', function () {
 });
 
 test('it can create a category', function () {
-    $this->actingAs(tenantAdmin(),'tenant_admin')->post('/api/admin/category/create', [
+    $this->actingAs(tenantAdmin(), 'tenant_admin')->post('/api/admin/category/create', [
         'title' => 'Test Category',
     ])->assertStatus(201);
 
@@ -31,7 +31,7 @@ test('it can create a category', function () {
 });
 
 test('it can update a category', function () {
-    $this->actingAs(tenantAdmin(),'tenant_admin');
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
     $category = \Modules\Category\Entities\Category::factory()->create();
 
     $this->put('/api/admin/category/update/' . $category->id, [
@@ -45,7 +45,7 @@ test('it can update a category', function () {
 
 
 test('it can reorder categories', function () {
-    $this->actingAs(tenantAdmin(),'tenant_admin');
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
     $category1 = \Modules\Category\Entities\Category::factory()->create();
     $category2 = \Modules\Category\Entities\Category::factory()->create();
     $category3 = \Modules\Category\Entities\Category::factory()->create();
@@ -80,5 +80,34 @@ test('it can reorder categories', function () {
     $this->assertDatabaseHas('categories', [
         'id' => $category3->id,
         'order' => 2,
+    ]);
+});
+
+
+test('admin can disable a category', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    $category = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->put('/api/admin/category/disable/' . $category->id)
+        ->assertStatus(200);
+
+    $this->assertDatabaseHas('categories', [
+        'id' => $category->id,
+        'is_active' => false,
+    ]);
+});
+
+test('admin can enable a category', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    $category = \Modules\Category\Entities\Category::factory()->create([
+        'is_active' => false,
+    ]);
+
+    $this->put('/api/admin/category/enable/' . $category->id)
+        ->assertStatus(200);
+
+    $this->assertDatabaseHas('categories', [
+        'id' => $category->id,
+        'is_active' => true,
     ]);
 });

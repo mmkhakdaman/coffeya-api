@@ -21,7 +21,7 @@ class OrderItemFactory extends Factory
     public function definition()
     {
         return [
-            //
+
         ];
     }
 }

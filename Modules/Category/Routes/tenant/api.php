@@ -16,5 +16,6 @@ Route::prefix('admin/category')
         Route::post('/create', [CategoryController::class, 'create']);
         Route::put('/update/{category}', [CategoryController::class, 'update']);
         Route::put('/reorder', [CategoryController::class, 'reorder']);
-//        Route::put('/disable/{category}', [CategoryController::class, 'disable']);
+        Route::put('/disable/{category}', [CategoryController::class, 'disable']);
+        Route::put('/enable/{category}', [CategoryController::class, 'enable']);
     });

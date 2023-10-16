@@ -24,7 +24,7 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      * @return ResourceCollection
      */
-    public function list()
+    public function list(): ResourceCollection
     {
         Category::factory()->create();
         return CategoryResource::collection($this->service()->categories());
@@ -34,7 +34,7 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      * @return ResourceCollection
      */
-    public function adminList()
+    public function adminList(): ResourceCollection
     {
         return CategoryResource::collection($this->service()->categories());
     }
@@ -44,7 +44,7 @@ class CategoryController extends Controller
      * @param CategoryRequest $request
      * @return CategoryResource
      */
-    public function create(CategoryRequest $request)
+    public function create(CategoryRequest $request): CategoryResource
     {
         $category = $this->service()->createCategory($request->validated());
         return new CategoryResource($category);
@@ -53,10 +53,10 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      * @param CategoryRequest $request
-     * @param Category $id
+     * @param Category $category
      * @return CategoryResource
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, Category $category): CategoryResource
     {
         $this->service()->updateCategory($category, $request->validated());
         return new CategoryResource($category->fresh());
@@ -81,6 +81,25 @@ class CategoryController extends Controller
     public function disable(Category $category): JsonResponse
     {
         $this->service()->disableCategory($category);
-        return response()->json(['message' => 'Category disabled successfully']);
+        return response()->json(
+            [
+                'message' => 'Category disabled successfully',
+                'category' => new CategoryResource($category->fresh()),
+            ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * @param Category $category
+     * @return JsonResponse
+     */
+    public function enable(Category $category): JsonResponse
+    {
+        $this->service()->enableCategory($category);
+        return response()->json(
+            [
+                'message' => 'Category enabled successfully',
+                'category' => new CategoryResource($category->fresh()),
+            ]);
     }
 }

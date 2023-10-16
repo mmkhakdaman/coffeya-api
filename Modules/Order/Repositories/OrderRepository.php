@@ -14,7 +14,7 @@ class OrderRepository
         return Order::query();
     }
 
-    public function storeOrder($data)
+    public function storeOrder($data): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
         return $this->query()->create($data);
     }
@@ -34,5 +34,10 @@ class OrderRepository
                 }
             )->toArray()
         );
+    }
+
+    public function pendingOrders(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->query()->where('status', OrderStatusEnum::PENDING)->get();
     }
 }

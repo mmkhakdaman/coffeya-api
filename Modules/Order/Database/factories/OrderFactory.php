@@ -3,6 +3,9 @@
 namespace Modules\Order\Database\factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Customer\Entities\Address;
+use Modules\Customer\Entities\Customer;
+use Modules\Table\Entities\Table;
 
 class OrderFactory extends Factory
 {
@@ -20,8 +23,19 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
+        $isDelivery = $this->faker->boolean;
         return [
-            //
+            'customer_id' => Customer::factory()->create()->id,
+            'table_id' => Table::factory()->create()->id,
+            'is_delivery' => $isDelivery,
+            'address_id' => $isDelivery ? Address::factory()->create()->id : null,
+            'is_packaging' => $this->faker->boolean,
+            'description' => $this->faker->text,
+            'status' => "pending",
+            'pending_at' => $this->faker->dateTime(),
+            'post_cost' => $isDelivery ? 10000 : null,
+            'order_price' => $this->faker->randomFloat(2, 0, 999999.99),
+            'total_price' => $this->faker->randomFloat(2, 0, 999999.99),
         ];
     }
 }

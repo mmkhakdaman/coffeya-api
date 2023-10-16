@@ -4,31 +4,14 @@ namespace Modules\Order\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Customer\Entities\Address;
+use Modules\Customer\Entities\Customer;
+use Modules\Order\Enums\OrderStatusEnum;
+use Modules\Table\Entities\Table;
 
 class Order extends Model
 {
     use HasFactory;
-
-//$table->string('customer_id');
-//$table->foreignIdFor(\Modules\Table\Entities\Table::class)->nullable();
-//
-//$table->boolean('is_delivery')->default(false);
-//$table->foreignIdFor(\Modules\Customer\Entities\Address::class)->nullable();
-//
-//$table->boolean('is_packaging')->default(false);
-//
-//$table->text('description')->nullable();
-//
-//$table->bigInteger('post_cost')->default(0);
-//$table->bigInteger('order_price')->default(0);
-//$table->bigInteger('total_price')->default(0);
-//
-//$table->timestamp('pending_at')->nullable();
-//$table->timestamp('confirmed_at')->nullable();
-//$table->timestamp('completed_at')->nullable();
-//$table->timestamp('cancelled_at')->nullable();
-//
-//$table->enum('status', get_value_enums(OrderStatusEnum::cases()))->default(OrderStatusEnum::NOT_PAID->value);
 
 
     protected $fillable = [
@@ -53,9 +36,24 @@ class Order extends Model
         return \Modules\Order\Database\factories\OrderFactory::new();
     }
 
-    public function items()
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function customer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function table(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Table::class);
+    }
+
+    public function address(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Address::class);
     }
 
 }

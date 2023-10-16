@@ -44,8 +44,13 @@ class CategoryService
         return $this->repo()->reorderCategories($categories);
     }
 
-    public function disableCategory(Category $category)
+    public function disableCategory(Category $category): bool
     {
         return $this->repo()->disableCategory($category);
+    }
+
+    public function enableCategory(Category $category): bool
+    {
+        return $this->repo()->enableCategory($category);
     }
 }
