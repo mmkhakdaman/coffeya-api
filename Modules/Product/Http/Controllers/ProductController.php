@@ -3,7 +3,10 @@
 namespace Modules\Product\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection as AnonymousResourceCollectionAlias;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Routing\Controller;
 use Modules\Product\Entities\Product;
 use Modules\Product\Http\Requests\OrderProductRequest;
@@ -20,7 +23,7 @@ class ProductController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @return ResourceCollection
+     * @return AnonymousResourceCollectionAlias
      */
     public function list()
     {
@@ -33,7 +36,7 @@ class ProductController extends Controller
      * Display a listing of the resource.
      * @return ResourceCollection
      */
-    public function activeProductList()
+    public function activeProductList(): ResourceCollection
     {
         return ProductResource::collection(
             $this->service()->activeProductList()
@@ -46,7 +49,7 @@ class ProductController extends Controller
      * @param ProductRequest $request
      * @return ProductResource
      */
-    public function create(ProductRequest $request)
+    public function create(ProductRequest $request): ProductResource
     {
         $product = $this->service()->createProduct($request->validated());
         return new ProductResource($product);
@@ -55,10 +58,10 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      * @param ProductRequest $request
-     * @param Product $id
+     * @param Product $product
      * @return ProductResource
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductRequest $request, Product $product): ProductResource
     {
         $this->service()->updateProduct($product, $request->validated());
         return new ProductResource($product->fresh());
@@ -66,11 +69,10 @@ class ProductController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param ProductRequest $request
-     * @param Product $id
+     * @param Product $product
      * @return ProductResource
      */
-    public function toggleActive(Product $product)
+    public function toggleActive(Product $product): ProductResource
     {
         $this->service()->toggleActive($product);
         return new ProductResource($product->fresh());
@@ -78,8 +80,7 @@ class ProductController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param ProductRequest $request
-     * @param Product $id
+     * @param Product $product
      * @return ProductResource
      */
     public function toggleStock(Product $product)
@@ -91,7 +92,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      * @param OrderProductRequest $request
-     * @return Response
+     * @return JsonResponse
      */
     public function reorder(OrderProductRequest $request)
     {
@@ -101,10 +102,10 @@ class ProductController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param Product $id
-     * @return Response
+     * @param Product $product
+     * @return JsonResponse
      */
-    public function delete(Product $product)
+    public function delete(Product $product): JsonResponse
     {
         $this->service()->deleteProduct($product);
         return response()->json(['message' => 'Product deleted successfully']);
