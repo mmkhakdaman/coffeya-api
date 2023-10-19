@@ -3,6 +3,7 @@
 namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ProductResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class ProductResource extends JsonResource
             'category_id' => $this->category_id,
             'order' => $this->order,
             'price' => $this->price,
-            'image' => $this->image ? url('/storage/' . $this->image) : url('/images/no-image.jpg'),
+            'image' => $this->image ? Storage::disk('public')->url($this->image) : '/images/no-image.png',
             'is_active' => $this->is_active,
             'in_stock' => $this->in_stock,
             'created_at' => $this->created_at,
