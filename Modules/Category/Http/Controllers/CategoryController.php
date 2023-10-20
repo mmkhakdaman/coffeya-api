@@ -33,7 +33,6 @@ class CategoryController extends Controller
      */
     public function list(): ResourceCollection
     {
-        Category::factory()->create();
         return CategoryResource::collection($this->repo()->getHasProductsCategories());
     }
 
@@ -43,7 +42,7 @@ class CategoryController extends Controller
      */
     public function adminList(): ResourceCollection
     {
-        return CategoryResource::collection($this->repo()->getCategories());
+        return CategoryResource::collection($this->repo()->getCategories(request()->query('with_product',false)));
     }
 
     /**

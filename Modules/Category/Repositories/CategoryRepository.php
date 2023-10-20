@@ -30,9 +30,12 @@ class CategoryRepository
         return $category->delete();
     }
 
-    public function getCategories(): \Illuminate\Database\Eloquent\Collection|array
+    public function getCategories($withProducts = false): \Illuminate\Database\Eloquent\Collection|array
     {
         return $this->query()
+            ->when($withProducts, function ($query) {
+                $query->with('products');
+            })
             ->orderBy('order')
             ->get();
     }

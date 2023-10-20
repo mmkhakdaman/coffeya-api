@@ -20,6 +20,25 @@ test('it can see the list of categories', function () {
         ]);
 });
 
+test('it can see the list of categories with products', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin')->get('/api/admin/category/list?with_product=true')
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'title',
+                    'products' => [
+                        '*' => [
+                            'id',
+                            'title',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+});
+
 test('it can create a category', function () {
     $this->actingAs(tenantAdmin(), 'tenant_admin')->post('/api/admin/category/create', [
         'title' => 'Test Category',
