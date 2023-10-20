@@ -20,13 +20,9 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'customer' => $this->customer,
-            'table' => $this->whenHas('table', function () {
-                return TableResource::make($this->table);
-            }),
+            'table' => $this->whenLoaded('table', TableResource::make($this->table)),
             'is_delivery' => $this->is_delivery,
-            'address' => $this->whenHas('address', function () {
-                return AddressResource::make($this->address);
-            }),
+            'address' => $this->whenLoaded('address', AddressResource::make($this->address)),
             'is_packaging' => $this->is_packaging,
             'description' => $this->description,
             'status' => $this->status,

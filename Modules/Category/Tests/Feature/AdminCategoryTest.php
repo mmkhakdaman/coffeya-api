@@ -8,6 +8,7 @@ beforeEach(function () {
 });
 
 test('it can see the list of categories', function () {
+    \Modules\Product\Entities\Product::factory()->count(3)->create();
     $this->actingAs(tenantAdmin(), 'tenant_admin')->get('/api/admin/category/list')
         ->assertStatus(200)
         ->assertJsonStructure([
@@ -21,6 +22,7 @@ test('it can see the list of categories', function () {
 });
 
 test('it can see the list of categories with products', function () {
+    \Modules\Product\Entities\Product::factory()->count(3)->create();
     $this->actingAs(tenantAdmin(), 'tenant_admin')->get('/api/admin/category/list?with_product=true')
         ->assertStatus(200)
         ->assertJsonStructure([
