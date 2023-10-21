@@ -110,4 +110,14 @@ class ProductController extends Controller
         $this->service()->deleteProduct($product);
         return response()->json(['message' => 'Product deleted successfully']);
     }
+
+    /**
+     * Display the specified resource.
+     * @param Product $product
+     * @return ProductResource
+     */
+    public function show(Product $product): ProductResource
+    {
+        return new ProductResource($product);
+    }
 }

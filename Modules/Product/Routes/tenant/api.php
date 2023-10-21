@@ -24,6 +24,7 @@ Route::prefix('product')
 Route::prefix('/admin/product')
     ->group(function () {
         Route::get('/list', [ProductController::class, 'list']);
+        Route::get('/{product}', [ProductController::class, 'show']);
         Route::post('/create', [ProductController::class, 'create']);
         Route::put('/update/{product}', [ProductController::class, 'update']);
         Route::put('/reorder', [ProductController::class, 'reorder']);

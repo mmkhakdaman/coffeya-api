@@ -187,3 +187,24 @@ test('it can make a product in stock', function () {
         'in_stock' => true,
     ]);
 });
+
+test('user can see one product', function () {
+    $product = \Modules\Product\Entities\Product::factory()->create();
+
+
+    $this->get('/api/admin/product/' . $product->id)
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                'id',
+                'title',
+                'description',
+                'category_id',
+                'order',
+                'price',
+                'image',
+                'is_active',
+                'in_stock',
+            ],
+        ]);
+});
