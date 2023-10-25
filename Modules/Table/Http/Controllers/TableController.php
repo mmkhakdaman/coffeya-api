@@ -4,6 +4,7 @@ namespace Modules\Table\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 use Modules\Table\Entities\Table;
@@ -22,19 +23,19 @@ class TableController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @return Collection
+     * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         return TableResource::collection(Table::all());
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param Request $request
+     * @param TableRequest $request
      * @return TableResource
      */
-    public function store(TableRequest $request)
+    public function store(TableRequest $request): TableResource
     {
         $table = $this->service()->createTable($request->validated());
 
@@ -46,7 +47,7 @@ class TableController extends Controller
      * @param Table $table
      * @return TableResource
      */
-    public function show(Table $table)
+    public function show(Table $table): TableResource
     {
         return new TableResource($table);
     }
@@ -55,10 +56,10 @@ class TableController extends Controller
     /**
      * Update the specified resource in storage.
      * @param TableRequest $request
-     * @param Table $id
+     * @param Table $table
      * @return TableResource
      */
-    public function update(TableRequest $request, Table $table)
+    public function update(TableRequest $request, Table $table): TableResource
     {
         $this->service()->updateTable($request->validated(), $table);
 
@@ -70,7 +71,7 @@ class TableController extends Controller
      * @param Table $table
      * @return TableResource
      */
-    public function toggleActive(Table $table)
+    public function toggleActive(Table $table): TableResource
     {
         $this->service()->toggleActive($table);
 
