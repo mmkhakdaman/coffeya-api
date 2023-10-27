@@ -36,6 +36,15 @@ class ProductRepository
             ->get();
     }
 
+
+    public function products()
+    {
+        return $this->query()
+            ->orderBy('order')
+            ->get();
+    }
+
+
     public function findProductsByIds($ids)
     {
         return $this->query()

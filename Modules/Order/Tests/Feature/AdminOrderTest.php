@@ -9,7 +9,7 @@ beforeEach(function () {
 
 test('admin can see list of pending orders', function () {
     $admin = tenantAdmin();
-    \Modules\Order\Entities\Order::factory()->create([
+    $order = \Modules\Order\Entities\Order::factory()->create([
         'status' => \Modules\Order\Enums\OrderStatusEnum::PENDING,
     ]);
 

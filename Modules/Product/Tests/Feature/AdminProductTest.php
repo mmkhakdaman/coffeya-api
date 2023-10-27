@@ -1,6 +1,8 @@
 <?php
 
 
+use Illuminate\Support\Facades\Storage;
+
 uses(Tests\TestCase::class);
 
 
@@ -10,8 +12,14 @@ beforeEach(function () {
 
 
 test('it can see the list of products', function () {
+    \Modules\Product\Entities\Product::factory()->count(3)->create();
+
     $this->get('/api/admin/product/list')
         ->assertStatus(200)
+        ->assertJsonCount(
+            \Modules\Product\Entities\Product::query()->count(),
+            'data'
+        )
         ->assertJsonStructure([
             'data' => [
                 '*' => [
@@ -32,16 +40,14 @@ test('it can see the list of products', function () {
 });
 
 test('it can create a product', function () {
-    $image = \Illuminate\Http\UploadedFile::fake()->image('test.jpg');
     $category = \Modules\Category\Entities\Category::factory()->create();
 
 
-    $this->post('/api/admin/product/create', [
+    $this->postJson('/api/admin/product/create', [
         'title' => 'Test Product',
         'description' => 'Test Product Description',
         'category_id' => $category->id,
         'price' => 100,
-        'image' => $image,
     ])->assertStatus(201);
 
     $this->assertDatabaseHas('products', [
@@ -49,8 +55,149 @@ test('it can create a product', function () {
         'description' => 'Test Product Description',
         'category_id' => $category->id,
         'price' => 100,
+    ]);
+});
+
+test('title is required', function () {
+    $category = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->postJson('/api/admin/product/create', [
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ])->assertJsonValidationErrorFor('title');
+
+
+    $this->assertDatabaseMissing('products', [
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ]);
+
+    $this->assertDatabaseCount('products', 0);
+
+    $this->postJson('/api/admin/product/create', [
+        'title' => '',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ])
+        ->assertJsonValidationErrorFor('title');
+
+    $this->assertDatabaseMissing('products', [
+        'title' => '',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ]);
+
+    $this->assertDatabaseCount('products', 0);
+
+    $this->postJson('/api/admin/product/create', [
+        'title' => null,
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ])
+        ->assertJsonValidationErrorFor('title');
+
+    $this->assertDatabaseMissing('products', [
+        'title' => null,
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ]);
+
+    $this->assertDatabaseCount('products', 0);
+
+    $this->postJson('/api/admin/product/create', [
+        'title' => 'Test Product',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ])
+        ->assertStatus(201)
+        ->assertJsonMissingValidationErrors('title');
+
+    $this->assertDatabaseHas('products', [
+        'title' => 'Test Product',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ]);
+
+    $this->assertDatabaseCount('products', 1);
+});
+
+test('title is unique', function () {
+    $category = \Modules\Category\Entities\Category::factory()->create();
+
+    $this->postJson('/api/admin/product/create', [
+        'title' => 'Test Product',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ])
+        ->assertStatus(201)
+        ->assertJsonMissingValidationErrors('title');
+
+    $this->assertDatabaseHas('products', [
+        'title' => 'Test Product',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ]);
+
+    $this->assertDatabaseCount('products', 1);
+
+    $this->postJson('/api/admin/product/create', [
+        'title' => 'Test Product',
+        'description' => 'Test Product Description',
+        'category_id' => $category->id,
+        'price' => 100,
+    ])
+        ->assertJsonValidationErrorFor('title');
+
+    $this->assertDatabaseCount('products', 1);
+});
+
+test('it can upload an image', function () {
+    Storage::fake('public');
+    $image = \Illuminate\Http\UploadedFile::fake()->image('test.jpg');
+    $image2 = \Illuminate\Http\UploadedFile::fake()->image('test.jpg');
+    $product = \Modules\Product\Entities\Product::factory()->create([
         'image' => "products/{$image->hashName()}",
     ]);
+
+    $this->putJson('/api/admin/product/upload-image/' . $product->id, [
+        'image' => $image2,
+    ])->assertStatus(200);
+
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'image' => "products/{$image2->hashName()}",
+    ]);
+
+    Storage::disk('public')->assertExists("products/{$image2->hashName()}");
+    Storage::disk('public')->assertMissing("products/{$image->hashName()}");
+});
+
+test('it can delete image', function () {
+    Storage::fake('public');
+    $image = \Illuminate\Http\UploadedFile::fake()->image('test.jpg');
+    $product = \Modules\Product\Entities\Product::factory()->create([
+        'image' => "products/{$image->hashName()}",
+    ]);
+
+    $this->deleteJson('/api/admin/product/delete-image/' . $product->id)
+        ->assertStatus(200);
+
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'image' => null,
+    ]);
+
+    Storage::disk('public')->assertMissing("products/{$image->hashName()}");
 });
 
 test('it can update a product', function () {

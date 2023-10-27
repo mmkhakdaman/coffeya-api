@@ -120,4 +120,28 @@ class ProductController extends Controller
     {
         return new ProductResource($product);
     }
+
+    /**
+     * Upload image for the specified resource.
+     * @param Request $request
+     * @param Product $product
+     * @return ProductResource
+     */
+    public function uploadImage(Request $request, Product $product): ProductResource
+    {
+        $this->service()->uploadImage($product, $request->file('image'));
+        return new ProductResource($product->fresh());
+    }
+
+    /**
+     * Remove image for the specified resource.
+     * @param Product $product
+     * @return ProductResource
+     */
+    public function removeImage(Product $product): ProductResource
+    {
+        $this->service()->removeImage($product);
+        return new ProductResource($product->fresh());
+    }
+
 }

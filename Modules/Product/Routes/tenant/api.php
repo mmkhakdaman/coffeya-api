@@ -30,5 +30,7 @@ Route::prefix('/admin/product')
         Route::put('/reorder', [ProductController::class, 'reorder']);
         Route::put('/toggle-active/{product}', [ProductController::class, 'toggleActive']);
         Route::put('/toggle-stock/{product}', [ProductController::class, 'toggleStock']);
+        Route::put('/upload-image/{product}', [ProductController::class, 'uploadImage']);
+        Route::delete('/delete-image/{product}', [ProductController::class, 'removeImage']);
         Route::delete('/delete/{product}', [ProductController::class, 'delete']);
     });

@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Services;
 
+use Illuminate\Support\Facades\Storage;
 use Modules\Product\Entities\Product;
 use Modules\Product\Repositories\ProductRepository;
 
@@ -12,12 +13,12 @@ class ProductService
         return resolve(ProductRepository::class);
     }
 
-    public function productList()
+    public function productList(): \Illuminate\Database\Eloquent\Collection|array
     {
-        return $this->repo()->activeProducts();
+        return $this->repo()->products();
     }
-    
-    public function activeProductList()
+
+    public function activeProductList(): \Illuminate\Database\Eloquent\Collection|array
     {
         return $this->repo()->activeProducts();
     }
@@ -46,7 +47,7 @@ class ProductService
     {
         return $this->repo()->delete($category);
     }
-    
+
     public function toggleActive(Product $product)
     {
         return $this->repo()->toggleActive($product);
@@ -62,5 +63,20 @@ class ProductService
         return $this->repo()->reorder($data);
     }
 
-    
+    public function uploadImage(Product $product, array|\Illuminate\Http\UploadedFile|null $file)
+    {
+        if (isset($file)) {
+            Storage::disk('public')->delete($product->image);
+
+            $file = $file->store('products', 'public');
+        }
+        return $this->repo()->updateProduct($product, ['image' => $file]);
+    }
+
+    public function removeImage(Product $product)
+    {
+        Storage::disk('public')->delete($product->image);
+        return $this->repo()->updateProduct($product, ['image' => null]);
+    }
+
 }

@@ -33,7 +33,7 @@ class OrderFactory extends Factory
             'description' => $this->faker->text,
             'status' => "pending",
             'pending_at' => $this->faker->dateTime(),
-            'post_cost' => $isDelivery ? 10000 : null,
+            'post_cost' => $isDelivery ? 10000 : 0,
             'order_price' => $this->faker->randomFloat(2, 0, 999999.99),
             'total_price' => $this->faker->randomFloat(2, 0, 999999.99),
         ];
