@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
+use Modules\Order\Entities\Order;
+use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Order\Http\Requests\OrderRequest;
 use Modules\Order\Repositories\OrderRepository;
 use Modules\Order\Services\OrderService;
@@ -56,10 +58,28 @@ class OrderController extends Controller
      * Display a listing of the resource.
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return OrderResource::collection($this->repository()->pendingOrders());
+        $request->validate([
+            'status' => 'nullable|in:' . implode(',', get_value_enums(OrderStatusEnum::cases())),
+            'per_page' => 'nullable|integer',
+            'page' => 'nullable|integer',
+        ]);
+
+        return OrderResource::collection($this->repository()->ordersWithPagination(
+            $request->get('status', OrderStatusEnum::PENDING),
+            $request->get('per_page', 10),
+            $request->get('page', 1),
+        ));
     }
 
-
+    /**
+     * Display a listing of the resource.
+     * @param Order $order
+     * @return OrderResource
+     */
+    public function show(Order $order): OrderResource
+    {
+        return OrderResource::make($order);
+    }
 }

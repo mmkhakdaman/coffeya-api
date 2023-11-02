@@ -40,4 +40,15 @@ class OrderRepository
     {
         return $this->query()->where('status', OrderStatusEnum::PENDING)->get();
     }
+
+    public function ordersWithPagination($status = null, $perPage = 10, $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $this->query()
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->with(['customer', 'items.product','address'])
+            ->latest()
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
 }

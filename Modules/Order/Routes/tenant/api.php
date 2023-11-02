@@ -21,12 +21,12 @@ Route::middleware('auth:customer')
         }
     );
 
-Route::middleware('auth:admin')
+Route::middleware('auth:tenant_admin')
     ->prefix('admin')
     ->group(
         function () {
             Route::get('/orders', [OrderController::class, 'index']);
-            Route::get('/orders/{id}', [OrderController::class, 'show']);
+        Route::get('/orders/{id}', [OrderController::class, 'show']);
         }
     );
 

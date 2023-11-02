@@ -23,6 +23,7 @@ class AddressFactory extends Factory
         return [
             'name' => $this->faker->name,
             'address' => $this->faker->address,
+            'customer_id' => \Modules\Customer\Entities\Customer::factory()->create()->id,
         ];
     }
 }
