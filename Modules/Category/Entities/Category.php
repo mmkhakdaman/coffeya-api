@@ -24,9 +24,4 @@ class Category extends Model
     {
         return $this->hasMany(\Modules\Product\Entities\Product::class);
     }
-
-    public function activeProducts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(\Modules\Product\Entities\Product::class)->where('is_active', 1);
-    }
 }

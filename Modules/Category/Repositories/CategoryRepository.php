@@ -44,7 +44,9 @@ class CategoryRepository
     {
         return $this->query()
             ->orderBy('order')
-            ->withWhereHas('activeProducts')
+            ->withWhereHas('products', function ($query) {
+                $query->where('is_active', true);
+            })
             ->get();
     }
 
