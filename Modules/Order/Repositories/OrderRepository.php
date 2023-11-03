@@ -47,7 +47,7 @@ class OrderRepository
             ->when($status, function ($query) use ($status) {
                 $query->where('status', $status);
             })
-            ->with(['customer', 'items.product','address'])
+            ->with(['customer', 'items.product','address','table'])
             ->latest()
             ->paginate($perPage, ['*'], 'page', $page);
     }

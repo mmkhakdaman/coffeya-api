@@ -26,8 +26,8 @@ class OrderFactory extends Factory
         $isDelivery = $this->faker->boolean;
         return [
             'customer_id' => Customer::factory()->create()->id,
-            'table_id' => Table::factory()->create()->id,
             'is_delivery' => $isDelivery,
+            'table_id' => Table::factory()->create()->id,
             'address_id' => $isDelivery ? Address::factory()->create()->id : null,
             'is_packaging' => $this->faker->boolean,
             'description' => $this->faker->text,
