@@ -15,7 +15,7 @@ class OTP extends Model
     protected $fillable = [
         'token',
         'mobile',
-        'expired_on',
+        'expires_on',
     ];
 
     protected $table = "otps";
