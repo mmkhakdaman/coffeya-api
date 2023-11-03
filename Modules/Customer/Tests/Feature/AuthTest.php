@@ -7,16 +7,25 @@ uses(Tests\TestCase::class);
 // test auth
 
 it('should send otp', function () {
-    $response = $this->post('/api/customer/auth/send-otp', [
+    $response = $this->postJson('/api/customer/auth/send-otp', [
         'phone' => '09123456789',
     ]);
 
     $response->assertStatus(200);
+
+
+    $this->assertDatabaseHas('customers', [
+        'phone' => '09123456789',
+    ]);
+
+    $this->assertDatabaseHas('otps', [
+        'mobile' => '09123456789',
+    ]);
 });
 
 it('should verify otp', function () {
     $user = \Modules\Customer\Entities\Customer::factory()->create([
-        'phone'=>'09123456789'
+        'phone' => '09123456789'
     ]);
 
     $this->post('/api/customer/auth/send-otp', [
@@ -56,7 +65,7 @@ test('should not verify otp with invalid token', function () {
 
 test('should not verify otp with invalid phone', function () {
     $user = \Modules\Customer\Entities\Customer::factory()->create([
-        'phone'=>'09123456789'
+        'phone' => '09123456789'
     ]);
 
 

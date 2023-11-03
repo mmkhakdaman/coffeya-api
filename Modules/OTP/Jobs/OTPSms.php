@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Customer\Jobs;
+namespace Modules\OTP\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -47,7 +47,7 @@ class OTPSms implements ShouldQueue
     private function send()
     {
         /**
-         * 
+         *
          * @required $name string
          * @required $value string
          */

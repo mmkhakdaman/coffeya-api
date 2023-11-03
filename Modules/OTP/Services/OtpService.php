@@ -3,7 +3,7 @@
 namespace Modules\OTP\Services;
 
 use Illuminate\Notifications\Notifiable;
-use Modules\Customer\Jobs\OTPSms;
+use Modules\OTP\Jobs\OTPSms;
 use Modules\OTP\Repositories\OtpRepository;
 
 class OtpService
