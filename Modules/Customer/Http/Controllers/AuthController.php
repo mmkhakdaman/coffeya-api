@@ -75,4 +75,22 @@ class AuthController extends Controller
             ]
         ], 200);
     }
+
+    /**
+     * Refresh token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh(): \Illuminate\Http\JsonResponse
+    {
+        $token = auth()->guard('customer')->refresh();
+
+        return response()->json([
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => now()->addMinutes(config('jwt.ttl'))->timestamp,
+            ]
+        ], 200);
+    }
 }

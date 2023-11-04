@@ -85,3 +85,34 @@ test('should not verify otp with invalid phone', function () {
 });
 
 
+
+test('customers can refresh the token', function () {
+    $user = \Modules\Customer\Entities\Customer::factory()->create([
+        'phone' => '09123456789'
+    ]);
+
+    $this->postJson('/api/customer/auth/send-otp', [
+        'phone' => $user->phone,
+    ]);
+
+    $token = $user->otps()
+        ->first()->token;
+
+    $response = $this->postJson('/api/customer/auth/verify', [
+        'phone' => '09123456789',
+        'otp' => $token,
+    ]);
+
+    $response->assertStatus(200);
+
+    $response = $this->withHeader('Authorization', 'Bearer ' . $response->json('data.access_token'))->postJson('/api/customer/auth/refresh');
+
+    $response->assertStatus(200);
+    $response->assertJsonStructure([
+        'data' => [
+            'access_token',
+            'token_type',
+            'expires_in',
+        ]
+    ]);
+});
