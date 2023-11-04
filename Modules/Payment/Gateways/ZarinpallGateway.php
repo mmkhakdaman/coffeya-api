@@ -2,6 +2,7 @@
 
 namespace Modules\Payment\Gateways;
 
+use Closure;
 use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 
@@ -17,7 +18,7 @@ class ZarinpallGateway
         return 'zarinpall';
     }
 
-    public function request(int $amount, $id)
+    public function request(int $amount, $id, $onpayd = null)
     {
 
         // Create new invoice.
@@ -27,20 +28,13 @@ class ZarinpallGateway
         $invoice->amount($amount);
 
         // Set invoice description.
-        $invoice->detail('Invoice description');
 
         // Set invoice transaction id.
         $invoice->transactionId($id);
 
-        Payment::callbackUrl(
+        return  Payment::callbackUrl(
             route('payment.callback', ['gateway' => 'zarinpall'])
-        )->purchase($invoice, function ($driver, $transactionId) {
-            // Store transactionId in database as we need it to verify payment in the future.
-            // $this->storeTransactionId($transactionId);
-        });
-
-
-        return $invoice;
+        )->purchase($invoice, $onpayd);
     }
 
 

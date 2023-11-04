@@ -2,7 +2,7 @@
 
 namespace Modules\Payment\Repositories;
 
-use Modules\Payment\Models\Payment;
+use Modules\Payment\Entities\Payment;
 
 class PaymentRepo
 {

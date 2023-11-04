@@ -40,7 +40,7 @@ class OrderService
                     'customer_id' => auth()->id(),
                     'order_price' => $order_price,
                     'description' => $orderRequest->description,
-                    'status' => OrderStatusEnum::PENDING,
+                    'status' => OrderStatusEnum::NOT_PAID,
                     'table_id' => $orderRequest->table_id,
                     'pending_at' => now(),
                     'is_delivery' => $orderRequest->is_delivery,

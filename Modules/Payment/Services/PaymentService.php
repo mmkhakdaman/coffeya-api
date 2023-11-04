@@ -26,44 +26,49 @@ class PaymentService
         object   $paymentable,
         Customer $buyer,
         array    $discounts = []
-    )
-    {
+    ) {
         if ($amount <= 0 || is_null($paymentable->id) || is_null($buyer->id)) {
             return false;
         }
 
         $gateway = new ZarinpallGateway();
-        $invoice = $gateway->request($amount, $paymentable->id);
+        $invoice = $gateway->request($amount, $paymentable->id, function ($driver, $transactionId) use (
+            $paymentable,
+            $amount,
+            $buyer,
+            $gateway,
+            $discounts
+        ) {
+            if (!is_null($paymentable->percent)) {
+                $seller_p = $paymentable->percent;
+                $seller_share = ($amount / 100 * $seller_p);
+                $site_share = $amount - $seller_share;
+            } else {
+                $seller_p = $seller_share = 0;
+                $site_share = $amount;
+            }
+
+
+            $this->store([
+                'buyer_id' => $buyer->id,
+                'paymentable_id' => $paymentable->id,
+                'paymentable_type' => get_class($paymentable),
+                'amount' => $amount,
+                'invoice_id' => $transactionId,
+                'gateway' => $gateway->getName(),
+                'status' => PaymentStatusEnum::STATUS_PENDING->value,
+                'seller_p' => $seller_p,
+                'seller_share' => $seller_share,
+                'site_share' => $site_share,
+            ], $discounts);
+        });
 
         if (is_null($invoice)) {
             return back();
         }
 
 
-        if (!is_null($paymentable->percent)) {
-            $seller_p = $paymentable->percent;
-            $seller_share = ($amount / 100 * $seller_p);
-            $site_share = $amount - $seller_share;
-        } else {
-            $seller_p = $seller_share = 0;
-            $site_share = $amount;
-        }
-
-
-        $payment = $this->store([
-            'buyer_id' => $buyer->id,
-            'paymentable_id' => $paymentable->id,
-            'paymentable_type' => get_class($paymentable),
-            'amount' => $amount,
-            'invoice_id' => $invoice->getTransactionId(),
-            'gateway' => $gateway->getName(),
-            'status' => PaymentStatusEnum::STATUS_PENDING->value,
-            'seller_p' => $seller_p,
-            'seller_share' => $seller_share,
-            'site_share' => $site_share,
-        ], $discounts);
-
-        return (new \Shetabit\Multipay\Payment)->transactionId($payment->invoice_id)->pay();
+        return $invoice->pay();
     }
 
     /**

@@ -47,8 +47,14 @@ class OrderRepository
             ->when($status, function ($query) use ($status) {
                 $query->where('status', $status);
             })
-            ->with(['customer', 'items.product','address','table'])
+            ->with(['customer', 'items.product', 'address', 'table'])
             ->latest()
             ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+
+    public function changeStatus(\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder $order, OrderStatusEnum $status)
+    {
+        return $order->update(['status' => $status->value]);
     }
 }

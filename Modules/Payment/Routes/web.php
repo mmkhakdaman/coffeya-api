@@ -11,6 +11,16 @@
 |
 */
 
-Route::prefix('payment')->group(function() {
-    Route::get('/', 'PaymentController@index');
+use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+
+Route::middleware([
+    'web',
+    InitializeTenancyByDomain::class,
+    PreventAccessFromCentralDomains::class,
+])->group(function () {
+
+    Route::any('paments/callback', ['uses' => 'PaymentController@callback', 'as' => 'payment.callback']);
+    Route::get('payments/fail', ['uses' => 'PaymentController@fail', 'as' => 'payment.fail']);
 });

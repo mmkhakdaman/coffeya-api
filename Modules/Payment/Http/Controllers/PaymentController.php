@@ -5,75 +5,68 @@ namespace Modules\Payment\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Payment\Enums\PaymentStatusEnum;
+use Modules\Payment\Events\PaymentWasSuccessful;
+use Modules\Payment\Gateways\ZarinpallGateway;
+use Modules\Payment\Repositories\PaymentRepo;
+use Modules\Payment\Services\PaymentService;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
+    private function paymentRepo(): PaymentRepo
     {
-        return view('payment::index');
+        return resolve(PaymentRepo::class);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return view('payment::create');
-    }
 
     /**
-     * Store a newly created resource in storage.
+     * Callback from gateway.
+     *
      * @param Request $request
-     * @return Renderable
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Request $request)
+    public function callback(Request $request)
     {
-        //
+        $gateway = new ZarinpallGateway();
+        $payment = $this->paymentRepo()->findByInvoiceId($gateway->getInvoiceIdFromRequest($request));
+        try {
+            $result = $gateway->verify($payment);
+        } catch (\Exception $e) {
+            $this->changeStatus($payment, PaymentStatusEnum::STATUS_FAIL->value);
+
+            return redirect()->route('payment.fail')->with('message', $e->getMessage());
+        }
+
+        if (is_array($result)) {
+            $this->changeStatus($payment, PaymentStatusEnum::STATUS_FAIL->value);
+
+            return redirect()->route('payment.fail')->with('message', $result['message']);
+        }
+
+        event(new PaymentWasSuccessful($payment));
+        $this->changeStatus($payment, PaymentStatusEnum::STATUS_SUCCESS->value);
+        return redirect()->to(tenant()->domains->first()->domain);
     }
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Change payment status.
+     *
+     * @param        $payment
+     * @param string $status
+     *
+     * @return void
      */
-    public function show($id)
+    private function changeStatus($payment, string $status): void
     {
-        return view('payment::show');
+        resolve(PaymentService::class)->changeStatus($payment->id, $status);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('payment::edit');
-    }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
+    public function fail()
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
+        // return Inertia::render('Payment/Fail', [
+        //     'message' => session('message')
+        // ]);
     }
 }
