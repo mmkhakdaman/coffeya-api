@@ -2,11 +2,7 @@
 
 namespace Modules\Order\Listeners;
 
-use App\Jobs\SmsJob;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Modules\Order\Enums\OrderStatusEnum;
-use Modules\Order\Repositories\OrderRepository;
+use App\Jobs\SMSJob;
 use Modules\Payment\Events\PaymentWasSuccessful;
 
 class SendNotification
@@ -24,7 +20,7 @@ class SendNotification
      */
     public function handle(PaymentWasSuccessful $event): void
     {
-        SmsJob::dispatch(
+        SMSJob::dispatch(
             config('otp.owner_phone_number'),
             config('sms.otp'),
             [
