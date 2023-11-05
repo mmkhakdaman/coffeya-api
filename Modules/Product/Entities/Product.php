@@ -21,6 +21,11 @@ class Product extends Model
         'in_stock',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'in_stock' => 'boolean',
+    ];
+
     protected static function newFactory()
     {
         return \Modules\Product\Database\factories\ProductFactory::new();

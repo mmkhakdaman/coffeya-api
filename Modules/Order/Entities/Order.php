@@ -31,6 +31,15 @@ class Order extends Model
         'total_price',
     ];
 
+    protected $casts = [
+        'is_delivery' => 'boolean',
+        'is_packaging' => 'boolean',
+        'pending_at' => 'datetime',
+        'confirmed_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
+    ];
+
     protected static function newFactory()
     {
         return \Modules\Order\Database\factories\OrderFactory::new();
