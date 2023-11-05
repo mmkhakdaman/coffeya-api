@@ -57,4 +57,9 @@ class OrderRepository
     {
         return $order->update(['status' => $status->value]);
     }
+
+    public function orderById($id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder|null
+    {
+        return $this->query()->with(['customer', 'items.product', 'address', 'table'])->find($id);
+    }
 }

@@ -94,7 +94,6 @@ class OrderController extends Controller
     {
         $this->service()->updateOrder($request, $order);
 
-
-        return OrderResource::make($order->fresh());
+        return OrderResource::make($this->repository()->orderById($order->id));
     }
 }
