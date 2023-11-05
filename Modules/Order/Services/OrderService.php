@@ -5,6 +5,7 @@ namespace Modules\Order\Services;
 use Modules\Address\Entities\Address;
 use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Order\Http\Requests\OrderRequest;
+use Modules\Order\Http\Requests\UpdateOrderRequest;
 use Modules\Order\Repositories\OrderRepository;
 use Modules\Product\Repositories\ProductRepository;
 
@@ -66,5 +67,18 @@ class OrderService
     private function postCost(): int
     {
         return 10000;
+    }
+
+    public function updateOrder(UpdateOrderRequest $request, \Modules\Order\Entities\Order $order)
+    {
+        $order->update(
+            $request->only(
+                [
+                    'status',
+                ]
+            )
+        );
+
+        return $order;
     }
 }

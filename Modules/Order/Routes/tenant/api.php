@@ -26,7 +26,8 @@ Route::middleware('auth:tenant_admin')
     ->group(
         function () {
             Route::get('/orders', [OrderController::class, 'index']);
-            Route::get('/orders/{id}', [OrderController::class, 'show']);
+            Route::get('/orders/{order}', [OrderController::class, 'show']);
+            Route::put('/orders/{order}', [OrderController::class, 'update']);
         }
     );
 

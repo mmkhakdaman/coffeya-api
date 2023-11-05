@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Modules\Order\Entities\Order;
 use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Order\Http\Requests\OrderRequest;
+use Modules\Order\Http\Requests\UpdateOrderRequest;
 use Modules\Order\Repositories\OrderRepository;
 use Modules\Order\Services\OrderService;
 use Modules\Order\Transformers\OrderResource;
@@ -81,5 +82,19 @@ class OrderController extends Controller
     public function show(Order $order): OrderResource
     {
         return OrderResource::make($order);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     * @param Order $order
+     * @return OrderResource
+     */
+    public function update(UpdateOrderRequest $request, Order $order): OrderResource
+    {
+        $this->service()->updateOrder($request, $order);
+
+
+        return OrderResource::make($order->fresh());
     }
 }

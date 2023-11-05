@@ -70,6 +70,22 @@ test('admin can see list of completed order with pagination', function () {
     assertOrderJsonStructure($res);
 });
 
+test('admin users can update the order status', function () {
+    $this->withoutExceptionHandling();
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+
+    $order = \Modules\Order\Entities\Order::factory()->create(
+        [
+            'status' => 'pending',
+        ]
+    );
+
+    $this->putJson("/api/admin/orders/{$order->id}", ['status' => 'confirmed'])
+        ->assertOk();
+
+    $this->assertDatabaseHas('orders', ['id' => $order->id, 'status' => 'confirmed']);
+});
+
 
 function assertOrderJsonStructure($response)
 {
