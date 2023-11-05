@@ -17,7 +17,7 @@ class Category extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
-    ];s
+    ];
 
     protected static function newFactory(): \Modules\Category\Database\factories\CategoryFactory
     {
