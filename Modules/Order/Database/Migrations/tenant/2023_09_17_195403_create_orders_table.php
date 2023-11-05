@@ -35,7 +35,7 @@ return new class extends Migration {
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
 
-            $table->enum('status', get_value_enums(OrderStatusEnum::cases()))->default(OrderStatusEnum::NOT_PAID->value);
+            $table->string('status')->default(OrderStatusEnum::NOT_PAID->value);
 
             $table->softDeletes();
             $table->timestamps();

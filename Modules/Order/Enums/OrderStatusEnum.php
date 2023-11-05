@@ -8,5 +8,6 @@ enum OrderStatusEnum: string
     case PENDING = 'pending';
     case CONFIRMED = 'confirmed';
     case CANCELLED = 'cancelled';
+    case DELIVERED = 'delivered';
     case COMPLETED = 'completed';
 }
