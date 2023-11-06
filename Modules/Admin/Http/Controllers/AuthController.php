@@ -22,8 +22,11 @@ class AuthController extends Controller
 
         if (!auth('tenant_admin')->attempt($request->only('phone', 'password'))) {
             return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
+                'errors' => [
+                    'phone' => ['نام کاربری یا رمز عبور اشتباه است']
+                ],
+                'message' => 'نام کاربری یا رمز عبور اشتباه است'
+            ], 422);
         }
 
         $token = auth('tenant_admin')->claims([
@@ -52,7 +55,7 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */
