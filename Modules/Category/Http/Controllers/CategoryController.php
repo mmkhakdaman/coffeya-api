@@ -53,6 +53,7 @@ class CategoryController extends Controller
     public function create(CategoryRequest $request): CategoryResource
     {
         $category = $this->service()->createCategory($request->validated());
+        $category->refresh();
         return new CategoryResource($category);
     }
 

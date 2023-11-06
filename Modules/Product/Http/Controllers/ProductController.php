@@ -52,6 +52,7 @@ class ProductController extends Controller
     public function create(ProductRequest $request): ProductResource
     {
         $product = $this->service()->createProduct($request->validated());
+        $product->refresh();
         return new ProductResource($product);
     }
 
@@ -63,7 +64,12 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product): ProductResource
     {
-        $this->service()->updateProduct($product, $request->validated());
+        $this->service()->updateProduct($product, $request->only([
+            'title',
+            'description',
+            'price',
+            'image',
+        ]));
         return new ProductResource($product->fresh());
     }
 

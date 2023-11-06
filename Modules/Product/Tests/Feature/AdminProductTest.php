@@ -48,13 +48,17 @@ test('it can create a product', function () {
         'description' => 'Test Product Description',
         'category_id' => $category->id,
         'price' => 100,
-    ])->assertStatus(201);
+    ])
+        ->assertStatus(201);
+
 
     $this->assertDatabaseHas('products', [
         'title' => 'Test Product',
         'description' => 'Test Product Description',
         'category_id' => $category->id,
         'price' => 100,
+        'is_active' => true,
+        'in_stock' => true,
     ]);
 });
 

@@ -14,7 +14,10 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => [
+                $this->product ? 'nullable' : 'required',
+                'exists:categories,id'
+            ],
             'title' => 'required|string|max:255|unique:products,title,' . $this->product?->id,
             'description' => 'nullable|string|max:255',
             'price' => 'required|numeric',

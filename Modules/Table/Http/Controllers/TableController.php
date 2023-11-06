@@ -38,7 +38,7 @@ class TableController extends Controller
     public function store(TableRequest $request): TableResource
     {
         $table = $this->service()->createTable($request->validated());
-
+        $table->refresh();
         return new TableResource($table);
     }
 

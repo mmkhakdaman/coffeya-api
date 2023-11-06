@@ -42,14 +42,8 @@ class AddressController extends Controller
             $request->address,
             auth()->id()
         );
-
-        return response()->json(
-            [
-                'message' => 'Address created successfully',
-                'data' => new AddressResource($address),
-            ],
-            Response::HTTP_CREATED
-        );
+        $address->refresh();
+        return new AddressResource($address);
     }
 
     /**
@@ -66,9 +60,9 @@ class AddressController extends Controller
      * Update the specified resource in storage.
      * @param AddressRequest $request
      * @param Address $address
-     * @return JsonResponse
+     * @return AddressResource
      */
-    public function update(AddressRequest $request, Address $address): JsonResponse
+    public function update(AddressRequest $request, Address $address): AddressResource
     {
         $this->repo()->updateAddress(
             $address,
@@ -78,13 +72,9 @@ class AddressController extends Controller
             ]
         );
 
-        return response()->json(
-            [
-                'message' => 'Address updated successfully',
-                'data' => new AddressResource($address),
-            ],
-            Response::HTTP_OK
-        );
+        $address->fresh();
+
+        return new AddressResource($address);
     }
 
     /**

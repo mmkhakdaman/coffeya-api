@@ -10,7 +10,7 @@ class ProductResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request
+     * @param \Illuminate\Http\Request
      * @return array
      */
     public function toArray($request)
@@ -23,8 +23,8 @@ class ProductResource extends JsonResource
             'order' => $this->order,
             'price' => $this->price,
             'image' => $this->image ? tenant_asset($this->image) : url('/images/no-image.jpg'),
-            'is_active' => $this->is_active,
-            'in_stock' => $this->in_stock,
+            'is_active' => (bool)$this->is_active,
+            'in_stock' => (bool)$this->in_stock,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
