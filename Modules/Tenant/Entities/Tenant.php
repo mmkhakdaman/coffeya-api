@@ -38,6 +38,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     public function domain(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Domain::class);
+        return $this->hasOne(\Stancl\Tenancy\Database\Models\Domain::class);
     }
 }
