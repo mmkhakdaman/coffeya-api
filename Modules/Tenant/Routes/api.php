@@ -16,6 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('tenant')
     ->group(function () {
-//        Route::post('/auth/send-otp', [AuthController::class, 'sendOtp']);
-//        Route::post('/auth/verify', [AuthController::class, 'verifyOtp']);
+        Route::get('/search', [\Modules\Tenant\Http\Controllers\TenantController::class, 'search']);
     });

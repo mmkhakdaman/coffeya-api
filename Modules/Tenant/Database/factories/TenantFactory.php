@@ -21,7 +21,8 @@ class TenantFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'english_name' => $this->faker->name,
+            'name' => $this->faker->name,
         ];
     }
 }
