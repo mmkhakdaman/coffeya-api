@@ -18,7 +18,9 @@ class TenantController extends Controller
      */
     public function search(Request $request): AnonymousResourceCollection
     {
-        $tenants = Tenant::query()->where('name', 'like', "%{$request->name}%")->get();
+        $tenants = Tenant::query()
+            ->with('domain')
+            ->where('name', 'like', "%{$request->name}%")->get();
 
 
         return TenantResource::collection($tenants);
