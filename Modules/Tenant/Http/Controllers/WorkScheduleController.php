@@ -29,10 +29,8 @@ class WorkScheduleController extends Controller
             return response()->json(['data' => false]);
         }
 
-        $startTime = now()->setTimeFromTimeString($workSchedule->start_time);
-        $endTime = now()->setTimeFromTimeString($workSchedule->end_time);
 
-        if (now()->between($startTime, $endTime)) {
+        if (now()->between($workSchedule->start_time, $workSchedule->end_time)) {
             return response()->json(['data' => true]);
         }
 

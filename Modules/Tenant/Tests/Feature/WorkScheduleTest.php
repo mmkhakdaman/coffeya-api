@@ -39,7 +39,7 @@ test(
             [
                 'work_day' => \Carbon\Carbon::now()->dayOfWeek,
                 'start_time' => now()->subMinutes(30)->format('H:i:s'), // 30 minutes ago (open)
-                'end_time' => now()->addMinutes(30)->format('H:i:s'), // 30 minutes from now (open)
+                'end_time' => \Carbon\Carbon::maxValue()->format('H:i:s'), // 23:59:59 (closed)
             ]
         );
 
@@ -61,7 +61,7 @@ test(
             [
                 'work_day' => \Carbon\Carbon::now()->dayOfWeek,
                 'start_time' => now()->addMinutes(30)->format('H:i:s'), // 30 minutes from now (closed)
-                'end_time' => now()->addMinutes(60)->format('H:i:s'), // 60 minutes from now (closed)
+                'end_time' => \Carbon\Carbon::maxValue()->format('H:i:s'), // 23:59:59 (closed)
             ]
         );
 

@@ -21,7 +21,7 @@ class WorkScheduleFactory extends Factory
     public function definition()
     {
         $end_time = $this->faker->time('H:i');
-        $start_time = $this->faker->time('H:i',$max = $end_time);
+        $start_time = $this->faker->time('H:i', $max = $end_time);
 
 
         return [
