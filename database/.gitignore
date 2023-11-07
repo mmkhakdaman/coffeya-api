@@ -1,4 +1,4 @@
 *.sqlite*
 
-tenant_foo
+tenant_*
 
