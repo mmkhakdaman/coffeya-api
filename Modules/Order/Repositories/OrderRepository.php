@@ -62,4 +62,29 @@ class OrderRepository
     {
         return $this->query()->with(['customer', 'items.product', 'address', 'table'])->find($id);
     }
+
+    public function customerNotCompletedOrders($customerId)
+    {
+        return $this->query()
+            ->whereNotIn('status', [
+                OrderStatusEnum::COMPLETED,
+                OrderStatusEnum::CANCELLED,
+                OrderStatusEnum::NOT_PAID,
+            ])
+            ->where('customer_id', $customerId)
+            ->with(['customer', 'items.product', 'address', 'table'])
+            ->get();
+    }
+
+    public function customerCompletedOrders($customerId)
+    {
+        return $this->query()
+            ->whereIn('status', [
+                OrderStatusEnum::COMPLETED,
+                OrderStatusEnum::CANCELLED,
+            ])
+            ->where('customer_id', $customerId)
+            ->with(['customer', 'items.product', 'address', 'table'])
+            ->get();
+    }
 }

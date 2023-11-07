@@ -18,6 +18,9 @@ Route::middleware('auth:customer')
     ->group(
         function () {
             Route::post('order/check-out', [OrderController::class, 'checkOut']);
+            Route::get('order/{order}', [OrderController::class, 'show']);
+            Route::get('orders', [OrderController::class, 'notCompletedOrders']);
+            Route::get('orders/completed', [OrderController::class, 'completedOrders']);
         }
     );
 

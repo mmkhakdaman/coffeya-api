@@ -1,6 +1,8 @@
 <?php
 
 use Modules\Customer\Entities\Address;
+use Modules\Order\Entities\Order;
+use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Product\Entities\Product;
 use Modules\Table\Entities\Table;
 
@@ -106,3 +108,64 @@ test('customer can order products with delivery', function () {
 });
 
 
+test('customers can see the all not completed order', function () {
+    $customer = customer();
+
+    \Modules\Order\Entities\Order::factory()
+        ->count(3)
+        ->create(
+            [
+                'customer_id' => $customer->id,
+                'status' => fake()->randomElement(['pending', 'confirmed', 'delivered']),
+            ]
+        );
+
+    $response = $this->actingAs($customer, 'customer')
+        ->getJson("/api/orders");
+
+
+    $response->assertOk();
+    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->has('data', 3));
+});
+
+test('customer can see list of completed orders', function () {
+    $customer = customer();
+
+    \Modules\Order\Entities\Order::factory()
+        ->count(3)
+        ->create(
+            [
+                'customer_id' => $customer->id,
+                'status' => fake()->randomElement(['completed', OrderStatusEnum::CANCELLED])
+            ]
+        );
+
+    $response = $this->actingAs($customer, 'customer')
+        ->getJson("/api/orders/completed");
+
+
+    $response->assertOk();
+    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->has('data', 3));
+});
+
+test(
+    'customer can see one of his orders',
+    function () {
+        $customer = customer();
+        $this->actingAs($customer, 'customer');
+        $order = Order::factory()->create(['customer_id' => auth()->id()]);
+        $this->getJson('/api/order/' . $order->id)
+            ->assertOk()
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'status',
+                    'total_price',
+                    'customer',
+                    'address',
+                    'table',
+                    'items',
+                ]
+            ]);
+    }
+);

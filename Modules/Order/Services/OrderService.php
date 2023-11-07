@@ -69,15 +69,9 @@ class OrderService
         return 10000;
     }
 
-    public function updateOrder(UpdateOrderRequest $request, \Modules\Order\Entities\Order $order)
+    public function updateOrder($data, \Modules\Order\Entities\Order $order)
     {
-        $order->update(
-            $request->only(
-                [
-                    'status',
-                ]
-            )
-        );
+        $order->update($data);
 
         return $order;
     }

@@ -81,6 +81,7 @@ class OrderController extends Controller
      */
     public function show(Order $order): OrderResource
     {
+        $order->load(['items.product', 'customer', 'address', 'table']);
         return OrderResource::make($order);
     }
 
@@ -92,8 +93,19 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order): OrderResource
     {
-        $this->service()->updateOrder($request, $order);
+        $this->service()->updateOrder($request->validated(), $order);
 
         return OrderResource::make($this->repository()->orderById($order->id));
+    }
+
+
+    public function notCompletedOrders(): AnonymousResourceCollection
+    {
+        return OrderResource::collection($this->repository()->customerNotCompletedOrders(auth()->id()));
+    }
+
+    public function completedOrders(): AnonymousResourceCollection
+    {
+        return OrderResource::collection($this->repository()->customerCompletedOrders(auth()->id()));
     }
 }
