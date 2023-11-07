@@ -196,6 +196,7 @@ return [
             'Modules/Order/Database/Migrations/tenant',
             'Modules/Payment/Database/Migrations/tenant',
             'Modules/Table/Database/Migrations/tenant',
+            'Modules/Tenant/Database/Migrations/tenant',
         ],
         '--realpath' => true,
     ],

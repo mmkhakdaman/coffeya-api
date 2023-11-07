@@ -15,4 +15,3 @@ use Modules\Table\Http\Controllers\TableController;
 |
 */
 
-
