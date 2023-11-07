@@ -3,58 +3,59 @@
 
 uses(Tests\TestCase::class);
 
-//test('user can make a tenant', function () {
-//    $user = user();
-//    $this->actingAs($user);
-//
-//    $this->post(route('tenant.store'), [
-//        'name' => 'Tenant Name',
-//        'domain' => 'tenant-name',
-//    ])->assertCreated();
-//
-//    $this->assertDatabaseHas('tenants', [
-//        'name' => 'Tenant Name',
-//        'domain' => 'tenant-name',
-//        'user_id' => $user->id,
-//    ]);
-//});
-//
-//test('user can see the list of tenants', function () {
-//    $user = user();
-//    $this->actingAs($user);
-//
-//    $this->get(route('tenant.index'))
-//        ->assertStatus(200)
-//        ->assertJsonStructure([
-//            'data' => [
-//                '*' => [
-//                    'id',
-//                    'name',
-//                    'domain',
-//                ],
-//            ],
-//        ]);
-//});
+beforeEach(function () {
+    initializeTenancy();
+});
 
 
-test('every one can search the tenants name', function () {
-    \Modules\Tenant\Entities\Tenant::factory()
-        ->for(user())
-        ->create([
-            'name' => 'entropy',
-            'domain' => 'tenant-name',
-        ]);
+test('every one can see the tenant data', function () {
+    \Illuminate\Support\Facades\Storage::fake('public');
+    $image = \Illuminate\Http\UploadedFile::fake()->image('logo.jpg')->store('tenant/logo');
+    tenant()->update([
+        'phone' => '09944432552',
+        'address' => 'Jl. Entropy',
+        'logo' => $image,
+        'location' => 'Jakarta',
+    ]);
 
-
-    $this->getJson('/api/tenant/search?name=entropy')
+    $this->getJson('/api/tenant')
         ->assertStatus(200)
         ->assertJsonStructure([
             'data' => [
-                '*' => [
-                    'id',
-                    'name',
-                    'domain',
-                ],
+                'id',
+                'name',
+                'logo',
+                'phone',
+                'address',
+                'location',
+                'domain'
+            ],
+        ]);
+});
+
+
+test('admin can update the tenant data', function () {
+    $this->actingAs(tenantAdmin(), 'tenant_admin');
+    \Illuminate\Support\Facades\Storage::fake('public');
+
+    $res = $this->putJson('/api/admin/tenant', [
+        'phone' => '09944432552',
+        'address' => 'Jl. Entropy',
+        'logo' => \Illuminate\Http\UploadedFile::fake()->image('logo.jpg'),
+        'location' => 'Jakarta',
+    ]);
+
+
+    $res
+        ->assertOk()
+        ->assertJsonStructure([
+            'data' => [
+                'id',
+                'logo',
+                'phone',
+                'address',
+                'location',
+                'domain'
             ],
         ]);
 });

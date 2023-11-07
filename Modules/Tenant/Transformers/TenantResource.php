@@ -18,6 +18,10 @@ class TenantResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'logo' => $this->logo ? tenant_asset($this->logo) : url('/images/no-image.jpg'),
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'location' => $this->location,
             'domain' => DomainResource::make($this->whenLoaded('domain')),
         ];
     }

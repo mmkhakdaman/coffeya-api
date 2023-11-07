@@ -53,6 +53,7 @@ expect()->extend('toBeOne', function () {
 function initializeTenancy()
 {
     \Illuminate\Support\Facades\File::delete(base_path('database/tenant_foo'));
+    \Illuminate\Support\Facades\File::delete(base_path('database/tenant_*'));
     $user = User::factory()->create();
     $tenant = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
     $tenant->domains()->create(['domain' => 'foo.test']);
@@ -67,7 +68,7 @@ function initializeTenancy()
  *
  * @return User
  */
-function tenantAdmin() : Admin
+function tenantAdmin(): Admin
 {
     return Admin::factory()->create();
 }
