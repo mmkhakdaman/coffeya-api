@@ -31,7 +31,7 @@ class PaymentWasSuccessful
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('payment_successfuly'),
+            new PrivateChannel('payment_successfully'),
         ];
     }
 }

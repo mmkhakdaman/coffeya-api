@@ -41,12 +41,12 @@ class PaymentController extends Controller
         if (is_array($result)) {
             $this->changeStatus($payment, PaymentStatusEnum::STATUS_FAIL->value);
 
-            return redirect()->route('payment.fail')->with('message', $result['message']);
+            return redirect("http://" . str(tenant()->domains->first()->domain)->split('.')->first() . ".coffeeya.ir/fail")->with('message', $result['message']);
         }
 
         event(new PaymentWasSuccessful($payment));
         $this->changeStatus($payment, PaymentStatusEnum::STATUS_SUCCESS->value);
-        return redirect()->to(tenant()->domains->first()->domain);
+        return redirect("http://" . str(tenant()->domains->first()->domain)->split('.')->first() . ".coffeeya.ir/orders");
     }
 
     /**

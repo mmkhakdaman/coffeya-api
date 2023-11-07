@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Customer\Http\Controllers\AddressController;
 use Modules\Customer\Http\Controllers\AuthController;
+use Modules\Customer\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +29,6 @@ Route::middleware('auth:customer')
     ->prefix('customer')
     ->group(function () {
         Route::apiResource('address', AddressController::class);
+        Route::put('/edit', [CustomerController::class, 'update']);
+        Route::get('/profile', [CustomerController::class, 'profile']);
     });
