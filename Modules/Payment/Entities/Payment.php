@@ -5,12 +5,13 @@ namespace Modules\Payment\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Customer\Entities\Customer;
 
 class Payment extends Model
 {
 
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Fillable columns.
