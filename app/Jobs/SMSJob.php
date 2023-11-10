@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Cryptommer\Smsir\Smsir;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
