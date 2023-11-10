@@ -34,6 +34,7 @@ class OrderFactory extends Factory
             'status' => "pending",
             'pending_at' => $this->faker->dateTime(),
             'post_cost' => $isDelivery ? 10000 : 0,
+            'is_pay_in_restaurant' => $this->faker->boolean,
             'order_price' => $this->faker->randomFloat(2, 0, 999999.99),
             'total_price' => $this->faker->randomFloat(2, 0, 999999.99),
         ];

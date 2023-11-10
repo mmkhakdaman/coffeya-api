@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Testing\Fluent\AssertableJson;
 use Modules\Customer\Entities\Address;
 use Modules\Order\Entities\Order;
 use Modules\Order\Enums\OrderStatusEnum;
@@ -40,7 +41,7 @@ test('customer can order products', function () {
             ]
         );
 
-    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url', 'order_id']));
+    $response->assertJson(fn(AssertableJson $json) => $json->hasAll(['redirect_url', 'order_id']));
 
     $this->assertDatabaseHas(
         'orders',
@@ -86,7 +87,7 @@ test('customer can order products with delivery', function () {
             ]
         );
 
-    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->hasAll(['redirect_url', 'order_id']));
+    $response->assertJson(fn(AssertableJson $json) => $json->hasAll(['redirect_url', 'order_id']));
 
     $this->assertDatabaseHas(
         'orders',
@@ -125,7 +126,7 @@ test('customers can see the all not completed order', function () {
 
 
     $response->assertOk();
-    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->has('data', 3));
+    $response->assertJson(fn(AssertableJson $json) => $json->has('data', 3));
 });
 
 test('customer can see list of completed orders', function () {
@@ -145,7 +146,7 @@ test('customer can see list of completed orders', function () {
 
 
     $response->assertOk();
-    $response->assertJson(fn(\Illuminate\Testing\Fluent\AssertableJson $json) => $json->has('data', 3));
+    $response->assertJson(fn(AssertableJson $json) => $json->has('data', 3));
 });
 
 test(
@@ -169,3 +170,54 @@ test(
             ]);
     }
 );
+
+
+test('customer can pay this order in the restaurant', function () {
+    $customer = customer();
+
+    $products = Product::factory()->count(3)->create();
+
+    $cart = $products->map(
+        function ($product) {
+            return [
+                'product_id' => $product->id,
+                'quantity' => 1,
+            ];
+        }
+    );
+
+    $response = $this->actingAs($customer, 'customer')
+        ->postJson(
+            "/api/order/check-out",
+            [
+                'cart' => $cart,
+                'description' => 'test description',
+                'is_delivery' => false,
+                'is_pay_in_restaurant' => true,
+            ]
+        );
+
+    $response->assertOk();
+
+
+    $response->assertJson(
+        fn(AssertableJson $json) => $json->hasAll(['order_id'])
+    );
+
+    $this->assertDatabaseHas(
+        'orders',
+        [
+            'customer_id' => $customer->id,
+            'is_pay_in_restaurant' => true,
+        ]
+    );
+
+    $this->assertDatabaseHas(
+        'order_items',
+        [
+            'order_id' => $response->json('order_id'),
+            'product_id' => $products->first()->id,
+            'quantity' => 1,
+        ],
+    );
+});

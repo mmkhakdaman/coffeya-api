@@ -42,6 +42,12 @@ class OrderController extends Controller
     {
         $order = $this->service()->storeOrder($request);
 
+        if ($order->is_pay_in_restaurant) {
+            return [
+                'order_id' => $order->id,
+            ];
+        }
+
         $transaction = $this->paymentService()->generate(
             $order->total_price,
             $order,

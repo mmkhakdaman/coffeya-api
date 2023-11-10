@@ -29,6 +29,7 @@ class Order extends Model
         'post_cost',
         'order_price',
         'total_price',
+        'is_pay_in_restaurant'
     ];
 
     protected $casts = [
