@@ -11,7 +11,7 @@ use Modules\Customer\Entities\Customer;
 class Payment extends Model
 {
 
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     /**
      * Fillable columns.

@@ -4,6 +4,7 @@ namespace Modules\Order\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Customer\Entities\Address;
 use Modules\Customer\Entities\Customer;
 use Modules\Order\Enums\OrderStatusEnum;
@@ -11,7 +12,7 @@ use Modules\Table\Entities\Table;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
 
     protected $fillable = [

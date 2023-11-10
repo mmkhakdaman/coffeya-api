@@ -66,13 +66,13 @@ class OrderRepository
     public function customerNotCompletedOrders($customerId)
     {
         return $this->query()
-            ->whereNotIn('status', [
-                OrderStatusEnum::COMPLETED,
-                OrderStatusEnum::CANCELLED,
-                OrderStatusEnum::NOT_PAID,
+            ->whereIn('status', [
+                OrderStatusEnum::DELIVERED,
+                OrderStatusEnum::PENDING,
+                OrderStatusEnum::CONFIRMED,
             ])
             ->where('customer_id', $customerId)
-            ->with(['customer', 'items.product', 'address', 'table'])
+            ->with(['items.product', 'address', 'table'])
             ->get();
     }
 
