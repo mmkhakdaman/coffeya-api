@@ -25,7 +25,7 @@ class UpdateOrderRequest extends FormRequest
                     )
                 ),
             ],
-            'complete_at' => 'sometimes|date_format:Y-m-d H:i',
+            'complete_at' => 'sometimes|date',
         ];
     }
 

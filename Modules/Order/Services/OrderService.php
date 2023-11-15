@@ -72,6 +72,10 @@ class OrderService
 
     public function updateOrder($data, \Modules\Order\Entities\Order $order)
     {
+        if ($order->status === OrderStatusEnum::PENDING && $data['status'] === OrderStatusEnum::CONFIRMED) {
+            $data['confirmed_at'] = now();
+        }
+
         $order->update($data);
 
         return $order;
