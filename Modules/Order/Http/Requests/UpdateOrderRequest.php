@@ -17,7 +17,7 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status'=> [
+            'status' => [
                 'required',
                 Rule::in(
                     get_value_enums(
@@ -25,6 +25,7 @@ class UpdateOrderRequest extends FormRequest
                     )
                 ),
             ],
+            'complete_at' => 'sometimes|date_format:Y-m-d H:i',
         ];
     }
 
