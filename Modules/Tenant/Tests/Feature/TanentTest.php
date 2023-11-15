@@ -16,6 +16,7 @@ test('every one can see the tenant data', function () {
         'address' => 'Jl. Entropy',
         'logo' => $image,
         'location' => 'Jakarta',
+        'cost_of_post' => 10000,
     ]);
 
     $this->getJson('/api/tenant')
@@ -28,7 +29,8 @@ test('every one can see the tenant data', function () {
                 'phone',
                 'address',
                 'location',
-                'domain'
+                'domain',
+                'cost_of_post',
             ],
         ]);
 });
@@ -43,6 +45,7 @@ test('admin can update the tenant data', function () {
         'address' => 'Jl. Entropy',
         'logo' => \Illuminate\Http\UploadedFile::fake()->image('logo.jpg'),
         'location' => 'Jakarta',
+        'cost_of_post' => 10000,
     ]);
 
 
@@ -55,7 +58,8 @@ test('admin can update the tenant data', function () {
                 'phone',
                 'address',
                 'location',
-                'domain'
+                'domain',
+                'cost_of_post',
             ],
         ]);
 });

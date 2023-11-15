@@ -67,12 +67,12 @@ class OrderService
 
     private function postCost(): int
     {
-        return 10000;
+        return tenant()->cost_of_post ?? 10000;
     }
 
     public function updateOrder($data, \Modules\Order\Entities\Order $order)
     {
-        if ($order->status === OrderStatusEnum::PENDING && $data['status'] === OrderStatusEnum::CONFIRMED) {
+        if ($order->status == OrderStatusEnum::PENDING->value && $data['status'] == OrderStatusEnum::CONFIRMED->value) {
             $data['confirmed_at'] = now();
         }
 

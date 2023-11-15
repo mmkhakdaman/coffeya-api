@@ -22,6 +22,7 @@ class TenantResource extends JsonResource
             'phone' => $this->phone,
             'address' => $this->address,
             'location' => $this->location,
+            'cost_of_post' => $this->cost_of_post ?? 10000,
             'domain' => DomainResource::make($this->whenLoaded('domain')),
         ];
     }

@@ -5,6 +5,7 @@ uses(Tests\TestCase::class);
 
 beforeEach(function () {
     initializeTenancy();
+    \Carbon\Carbon::setTestNowAndTimezone(tz: 'Asia/Tehran');
 });
 
 test('admin can see list of all order with pagination', function () {
@@ -83,7 +84,8 @@ test('admin users can update the order status', function () {
 
     $this->putJson("/api/admin/orders/{$order->id}", [
         'status' => 'confirmed',
-        'completed_at' => now()->addMinutes(2)
+        'completed_at' => now()
+            ->addMinutes(2)
     ])
         ->assertOk();
 
