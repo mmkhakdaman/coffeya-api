@@ -43,7 +43,7 @@ test('admin can see list of processing order with pagination', function () {
     \Modules\Order\Entities\Order::factory()->count(10)->create(
         [
             'status' => 'confirmed',
-            'complete_at' => now()->addMinutes(2)
+            'completed_at' => now()->addMinutes(2)
         ]
     );
 
@@ -83,14 +83,14 @@ test('admin users can update the order status', function () {
 
     $this->putJson("/api/admin/orders/{$order->id}", [
         'status' => 'confirmed',
-        'complete_at' => now()->addMinutes(2)
+        'completed_at' => now()->addMinutes(2)
     ])
         ->assertOk();
 
     $this->assertDatabaseHas('orders', [
         'id' => $order->id,
         'status' => 'confirmed',
-        'complete_at' => now()->addMinutes(2),
+        'completed_at' => now()->addMinutes(2),
         'confirmed_at' => now()
     ]);
 });
