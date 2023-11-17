@@ -18,9 +18,9 @@ class ProductRepository
         return Product::query();
     }
 
-    public function updateProduct(Product $category, array $data)
+    public function updateProduct(Product $product, array $data)
     {
-        return $category->update($data);
+        return $product->update($data);
     }
 
     public function delete(Product $category)

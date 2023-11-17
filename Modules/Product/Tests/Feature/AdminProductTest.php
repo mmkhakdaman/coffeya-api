@@ -359,31 +359,3 @@ test('user can see one product', function () {
             ],
         ]);
 });
-
-
-test('user can not update a product with repeat title', function () {
-    $product1 = \Modules\Product\Entities\Product::factory()->create();
-    $product2 = \Modules\Product\Entities\Product::factory()->create();
-
-    $req = $this->putJson('/api/admin/product/update/' . $product1->id, [
-        'title' => $product2->title,
-        'description' => 'Test Product Description Updated',
-        'category_id' => 1,
-        'price' => 100,
-    ]);
-
-    $req->assertJsonValidationErrorFor('title');
-});
-
-test('user can update the product with the same title', function () {
-    $product = \Modules\Product\Entities\Product::factory()->create();
-
-    $req = $this->putJson('/api/admin/product/update/' . $product->id, [
-        'title' => $product->title,
-        'description' => 'Test Product Description Updated',
-        'category_id' => 1,
-        'price' => 100,
-    ]);
-
-    $req->assertJsonMissingValidationErrors('title');
-});

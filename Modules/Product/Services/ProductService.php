@@ -35,12 +35,12 @@ class ProductService
         );
     }
 
-    public function updateProduct(Product $category, array $data)
+    public function updateProduct(Product $product, array $data)
     {
         if (isset($data['image'])) {
             $data['image'] = $data['image']->store('products', 'public');
         }
-        return $this->repo()->updateProduct($category, $data);
+        return $this->repo()->updateProduct($product, $data);
     }
 
     public function deleteProduct(Product $category)

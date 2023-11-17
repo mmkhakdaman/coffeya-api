@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Modules\Product\Entities\Product;
 use Modules\Product\Http\Requests\OrderProductRequest;
 use Modules\Product\Http\Requests\ProductRequest;
+use Modules\Product\Http\Requests\UpdateProductRequest;
 use Modules\Product\Services\ProductService;
 use Modules\Product\Transformers\ProductResource;
 
@@ -58,18 +59,13 @@ class ProductController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param ProductRequest $request
+     * @param UpdateProductRequest $request
      * @param Product $product
      * @return ProductResource
      */
-    public function update(ProductRequest $request, Product $product): ProductResource
+    public function update(UpdateProductRequest $request, Product $product): ProductResource
     {
-        $this->service()->updateProduct($product, $request->only([
-            'title',
-            'description',
-            'price',
-            'image',
-        ]));
+        $this->service()->updateProduct($product, $request->validated());
         return new ProductResource($product->fresh());
     }
 
