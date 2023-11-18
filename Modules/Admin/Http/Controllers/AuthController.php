@@ -39,16 +39,29 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        return $this->respondWithToken(auth('tenant_admin')->refresh());
+        try {
+            $token = auth('tenant_admin')->refresh();
+            return $this->respondWithToken();
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
     }
 
     public function logout()
     {
-        auth('tenant_admin')->logout();
+        try {
+            auth('tenant_admin')->logout();
 
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+            return response()->json([
+                'message' => 'Successfully logged out'
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
     }
 
 
