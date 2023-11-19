@@ -56,7 +56,7 @@ function initializeTenancy()
     \Illuminate\Support\Facades\File::delete(base_path('database/tenant_*'));
     $user = User::factory()->create();
     $tenant = $user->tenants()->create(['id' => 'foo', 'name' => 'Foo', 'english_name' => 'Foo']);
-    $tenant->domains()->create(['domain' => 'foo.test']);
+    $tenant->domains()->create(['domain' => 'foo.api.test', 'front_domain' => 'foo.test']);
     \Illuminate\Support\Facades\URL::forceRootUrl('http://' . $tenant->domains[0]['domain']);
 
     tenancy()->initialize($tenant);
