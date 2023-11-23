@@ -49,6 +49,7 @@ class OrderService
                     'post_cost' => $post_cost,
                     'total_price' => $order_price + $post_cost,
                     'is_pay_in_restaurant' => $orderRequest->is_pay_in_restaurant ?? false,
+                    'is_packaging' => $orderRequest->is_packaging ?? false,
                 ]
             );
         $this->repo()->storeOrderProducts($order, $cart);

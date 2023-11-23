@@ -26,6 +26,8 @@ class OrderRequest extends FormRequest
             'table_id' => 'nullable|integer|exists:tables,id',
             'address_id' => ['required_if:is_delivery,true|integer', Rule::exists(Address::class, 'id')->where('customer_id', auth('customer')->id())],
 
+            'is_packaging' => 'sometimes|required_if:is_delivery,false|boolean',
+
             'is_pay_in_restaurant' => ['required_if:is_delivery,false|boolean'],
         ];
     }
@@ -37,6 +39,6 @@ class OrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth('customer')->check();
+        return auth('customer')->check() === true;
     }
 }

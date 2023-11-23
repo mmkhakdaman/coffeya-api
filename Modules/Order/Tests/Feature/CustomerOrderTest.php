@@ -221,3 +221,56 @@ test('customer can pay this order in the restaurant', function () {
         ],
     );
 });
+
+test('customer can pack this order', function () {
+    $customer = customer();
+
+    $products = Product::factory()->count(3)->create();
+
+    $cart = $products->map(
+        function ($product) {
+            return [
+                'product_id' => $product->id,
+                'quantity' => 1,
+            ];
+        }
+    );
+
+    $response = $this->actingAs($customer, 'customer')
+        ->postJson(
+            "/api/order/check-out",
+            [
+                'cart' => $cart,
+                'description' => 'test description',
+                'is_delivery' => false,
+                'is_pay_in_restaurant' => true,
+                'is_packaging' => true,
+            ]
+        );
+
+    $response->assertOk();
+
+
+    $response->assertJson(
+        fn(AssertableJson $json) => $json->hasAll(['order_id'])
+    );
+
+    $this->assertDatabaseHas(
+        'orders',
+        [
+            'customer_id' => $customer->id,
+            'is_pay_in_restaurant' => true,
+            'is_packaging' => true,
+        ]
+    );
+
+    $this->assertDatabaseHas(
+        'order_items',
+        [
+            'order_id' => $response->json('order_id'),
+            'product_id' => $products->first()->id,
+            'quantity' => 1,
+        ],
+    );
+
+});
