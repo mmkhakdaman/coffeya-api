@@ -20,7 +20,7 @@ return [
         '127.0.0.1',
         'localhost',
         'coffeya-api.test',
-        'api.coffeeya.ir',
+        'api.apicoffeeya.ir',
     ],
 
     /**
